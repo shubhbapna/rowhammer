@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     }
 
     for (int i = 0; i < num_iterations - 1; i++) {
-        printf("%d\t%ld", i + 1, bank_latency[i]);
+        printf("%d\t%ld\n", i + 1, bank_latency[i]);
     }
     
 }

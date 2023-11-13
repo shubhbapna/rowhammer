@@ -150,9 +150,9 @@ uint64_t measure_bank_latency(uint64_t addr_A, uint64_t addr_B) {
   clflush(addr_A);
   clflush(addr_B);
 
-  one_block_access(addr_A);
+  maccess(addr_A);
   clflush(addr_A);
 
-  one_block_access(addr_B);
-  return measure_one_block_access_time(addr_A);  
+  maccess(addr_B);
+  return maccess_t(addr_A);  
 }
