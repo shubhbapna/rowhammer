@@ -35,13 +35,13 @@ int main(int argc, char **argv) {
     }
     fclose(fp);
 
-    printf("Base: %ld\n", (uint64_t)base);
-    printf("Possible same bank different col: %ld\n", (uint64_t)(base + possible_index * ROW_SIZE));
+    printf("Base: %ld\n", virt_to_phys((uint64_t)base));
+    printf("Possible same bank different col: %ld\n", virt_to_phys((uint64_t)(base + possible_index * ROW_SIZE)));
 
     print_results(bank_latency, num_iterations - 1);    
 
     // get the index where either top decile or max appears and use that to create a second address
-    // print the 2 addresses and compare the bits and check if it matches the bank address mapping typically used
+    // print the 2 addresses (convert to physical address) and compare the bits and check if it matches the bank address mapping typically used
     // once that is figured out you can construct any 2 addresses given address n that lie in the same bank but are n + 1 and n - 1 rows away
     // then hammer
 }
