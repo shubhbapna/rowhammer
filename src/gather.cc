@@ -2,7 +2,7 @@
 #include "util.hh"
 #include "params.hh"
 
-void print_results(uint64_t* same, uint64_t* diff);
+void print_results(uint64_t* results, long int size);
 
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
