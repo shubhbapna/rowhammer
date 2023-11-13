@@ -1,0 +1,5 @@
+mmap(NULL, memory_size, PROT_READ | PROT_WRITE,
+      MAP_POPULATE | MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB, -1, 0);
+
+MAP_HUGETLB is used to allocate pages of size 2MB: https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt
+need root privelege to configure it

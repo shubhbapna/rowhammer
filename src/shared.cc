@@ -33,7 +33,7 @@ uint64_t get_offset(uint64_t addr) {
  */
 void setup_PPN_VPN_map(void * mem_map, uint64_t memory_size, std::map<uint64_t, uint64_t> &PPN_VPN_map) {
   // TODO - Exercise 1-3
-  for (uint64_t i = 0; i < memory_size; i += HUGE_PAGE_SIZE) {
+  for (uint64_t i = 0; i < memory_size; i += PAGE_SIZE) {
     uint64_t * addr = (uint64_t *) ((uint8_t *) (mem_map) + i);
     uint64_t vpn = get_frame_number((uint64_t)addr);
     uint64_t ppn = get_frame_number(virt_to_phys((uint64_t)addr));
@@ -54,13 +54,13 @@ void setup_PPN_VPN_map(void * mem_map, uint64_t memory_size, std::map<uint64_t, 
  */
 void * allocate_pages(uint64_t memory_size) {
   void * memory_block = mmap(NULL, memory_size, PROT_READ | PROT_WRITE,
-      MAP_POPULATE | MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB, -1, 0);
+      MAP_POPULATE | MAP_ANONYMOUS | MAP_PRIVATE , -1, 0);
   
-  if (memory_block != (void*) - 1) {
+  if (memory_block == (void*) - 1) {
     printf("memory allocation failed: %s\n", strerror(errno));
   }
 
-  for (uint64_t i = 0; i < memory_size; i += HUGE_PAGE_SIZE) {
+  for (uint64_t i = 0; i < memory_size; i += PAGE_SIZE) {
     uint64_t * addr = (uint64_t *) ((uint8_t *) (memory_block) + i);
     *addr = i;
   } 

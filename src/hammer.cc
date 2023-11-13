@@ -19,7 +19,7 @@ bool hammer_addresses(uint64_t vict_phys_addr, uint64_t attacker_phys_addr_1, ui
   // prime
   uint8_t * vict_phys_addr_ptr = reinterpret_cast<uint8_t *>(vict_phys_addr);
   // row size in dram is 8KB
-  memset(vict_phys_addr_ptr, 0xFF, HUGE_PAGE_SIZE);
+  memset(vict_phys_addr_ptr, 0xFF, PAGE_SIZE);
   
   int num_reads = HAMMERS_PER_ITER;
   volatile uint8_t * attacker_phys_addr_1_ptr = reinterpret_cast<volatile uint8_t *>(attacker_phys_addr_1);
