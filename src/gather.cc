@@ -4,12 +4,6 @@
 
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
-
-    if (getuid()) {
-        printf("ERROR: Root permissions required!\n");
-        exit(1);
-    }
-
     allocated_mem = allocate_pages(BUFFER_SIZE_MB);
     
 

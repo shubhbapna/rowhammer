@@ -1,6 +1,7 @@
 #include "shared.hh"
 #include "params.hh"
 #include "util.hh"
+#include <errno.h>
 #include <emmintrin.h>
 
 // Physical Page Number to Virtual Page Number Map
@@ -54,7 +55,10 @@ void setup_PPN_VPN_map(void * mem_map, uint64_t memory_size, std::map<uint64_t, 
 void * allocate_pages(uint64_t memory_size) {
   void * memory_block = mmap(NULL, memory_size, PROT_READ | PROT_WRITE,
       MAP_POPULATE | MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB, -1, 0);
-  assert(memory_block != (void*) - 1);
+  
+  if (memory_block != (void*) - 1) {
+    printf("memory allocation failed: %s\n", strerror(errno));
+  }
 
   for (uint64_t i = 0; i < memory_size; i += HUGE_PAGE_SIZE) {
     uint64_t * addr = (uint64_t *) ((uint8_t *) (memory_block) + i);
