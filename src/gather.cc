@@ -11,12 +11,12 @@ int main(int argc, char **argv) {
     uint64_t bank_latency[num_iterations] = {0};
     char *base = (char *)allocated_mem;
 
-    for (int i = 1; i <= num_iterations; i++) {
+    for (int i = 1; i < num_iterations; i++) {
         uint64_t time = measure_bank_latency((uint64_t)base, (uint64_t)(base + i * ROW_SIZE));
         bank_latency[i - 1] = time;
     }
 
-    for (int i = 0; i < num_iterations; i++) {
+    for (int i = 0; i < num_iterations - 1; i++) {
         printf("%d\t%ld", i + 1, bank_latency[i]);
     }
     
