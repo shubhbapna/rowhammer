@@ -1,6 +1,8 @@
 #include "shared.hh"
 #include "util.hh"
 #include "params.hh"
+#include <iostream>
+#include <fstream>
 
 void print_results(uint64_t* results, long int size);
 
@@ -18,7 +20,23 @@ int main(int argc, char **argv) {
         bank_latency[i - 1] = time;
     }
 
+    FILE *fp = fopen("data.tsv", "w");
+    if (fp == NULL) {
+        perror("Error opening file");
+        exit(1);
+    }
+    fprintf(fp, "Address\tTime\n");
+    for (int i = 0; i < num_iterations - 1; i++) {
+        fprintf(fp, "%d\t%ld\n", i + 1, bank_latency[i]);
+    }
+    fclose(fp);
+
     print_results(bank_latency, num_iterations - 1);    
+
+    // get the index where either top decile or max appears and use that to create a second address
+    // print the 2 addresses and compare the bits and check if it matches the bank address mapping typically used
+    // once that is figured out you can construct any 2 addresses given address n that lie in the same bank but are n + 1 and n - 1 rows away
+    // then hammer
 }
 
 // Supporting functions for printing results in different formats
@@ -32,9 +50,9 @@ int compare(const void *p1, const void *p2) {
 
 void print_results(uint64_t* results, long int size) {
     qsort(results, size, sizeof(uint64_t), compare);
-    printf("Minimum      : %5ld\n", results[0]);
-    printf("Bottom decile: %5ld\n", results[size/10]);
-    printf("Median       : %5ld\n", results[size/2]);
-    printf("Top decile   : %5ld\n", results[(size * 9)/10]);
-    printf("Maximum      : %5ld\n", results[size-1]);
+    printf("Minimum      : %ld\n", results[0]);
+    printf("Bottom decile: %ld\n", results[size/10]);
+    printf("Median       : %ld\n", results[size/2]);
+    printf("Top decile   : %ld\n", results[(size * 9)/10]);
+    printf("Maximum      : %ld\n", results[size-1]);
 }
