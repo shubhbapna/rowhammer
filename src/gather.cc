@@ -2,6 +2,8 @@
 #include "util.hh"
 #include "params.hh"
 
+void print_results(uint64_t* same, uint64_t* diff);
+
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
     allocated_mem = allocate_pages(BUFFER_SIZE_MB);
