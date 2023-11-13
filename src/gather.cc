@@ -16,8 +16,11 @@ int main(int argc, char **argv) {
     char *base = (char *)allocated_mem;
 
     for (int i = 1; i < num_iterations; i++) {
-        uint64_t time = measure_bank_latency((uint64_t)base, (uint64_t)(base + i * ROW_SIZE));
-        bank_latency[i - 1] = time;
+        uint64_t time = 0;
+        for (int j = 0; j < SAMPLES; j++) {
+            time += measure_bank_latency((uint64_t)base, (uint64_t)(base + i * ROW_SIZE));
+        }
+        bank_latency[i - 1] = time / SAMPLES;
     }
 
     FILE *fp = fopen("data.tsv", "w");
@@ -26,17 +29,22 @@ int main(int argc, char **argv) {
         exit(1);
     }
     fprintf(fp, "Address\tTime\n");
-    int possible_index = 0;
+    int different_rows = 0;
+    int same_rows = 0;
     for (int i = 0; i < num_iterations - 1; i++) {
         fprintf(fp, "%d\t%ld\n", i + 1, bank_latency[i]);
-        if (bank_latency[i] > 255) {
-            possible_index = i;
+        if (bank_latency[i] > 255 && bank_latency[i] < 450) {
+            different_rows = i;
+        }
+        if (bank_latency[i] < 30) {
+            same_rows = i;
         }
     }
     fclose(fp);
 
     printf("Base: %ld\n", virt_to_phys((uint64_t)base));
-    printf("Possible same bank different col: %ld\n", virt_to_phys((uint64_t)(base + possible_index * ROW_SIZE)));
+    printf("Possible same bank different col (index: %d): %ld\n", different_rows, virt_to_phys((uint64_t)(base + different_rows * ROW_SIZE)));
+    printf("Possible same row (index: %d): %ld\n", same_rows, virt_to_phys((uint64_t)(base + same_rows * ROW_SIZE)));
 
     print_results(bank_latency, num_iterations - 1);    
 

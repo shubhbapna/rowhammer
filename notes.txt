@@ -3,3 +3,15 @@ mmap(NULL, memory_size, PROT_READ | PROT_WRITE,
 
 MAP_HUGETLB is used to allocate pages of size 2MB: https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt
 need root privelege to configure it
+
+/proc/self/pagemap also needs sudo access
+
+From rowhammer blog:
+
+How can we pick pairs of addresses that satisfy the “different row, same bank” requirements?
+
+One possibility is to use knowledge of how the CPU’s memory controller maps physical addresses to DRAM’s row, column and bank numbers, along with knowledge of either:
+
+The absolute physical addresses of memory we have access to. Linux allows this via /proc/PID/pagemap.
+The relative physical addresses of memory we have access to. Linux can allow this via its support for “huge pages”, which cover 2MB of contiguous physical address space per page. Whereas a normal 4k page is smaller than a typical DRAM row, a 2MB page will typically cover multiple rows, some of which will be in the same bank.
+Yoongu Kim et al take this approach. They pick Y = X + 8MByte based on knowledge of the physical address mapping used by the memory controllers in Intel and AMD’s CPUs.
