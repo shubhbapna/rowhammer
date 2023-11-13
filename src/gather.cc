@@ -26,10 +26,17 @@ int main(int argc, char **argv) {
         exit(1);
     }
     fprintf(fp, "Address\tTime\n");
+    int possible_index = 0;
     for (int i = 0; i < num_iterations - 1; i++) {
         fprintf(fp, "%d\t%ld\n", i + 1, bank_latency[i]);
+        if (bank_latency[i] > 255) {
+            possible_index = i;
+        }
     }
     fclose(fp);
+
+    printf("Base: %ld\n", (uint64_t)base);
+    printf("Possible same bank different col: %ld\n", (uint64_t)(base + possible_index * ROW_SIZE));
 
     print_results(bank_latency, num_iterations - 1);    
 
