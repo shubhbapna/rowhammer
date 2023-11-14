@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
     fclose(fp);
 
     printf("Base: %ld\n", virt_to_phys((uint64_t)base));
-    printf("Possible same bank different col (index: %d): %ld\n", different_rows, virt_to_phys((uint64_t)(base + different_rows * ROW_SIZE)));
+    printf("Possible same bank different row (index: %d): %ld\n", different_rows, virt_to_phys((uint64_t)(base + different_rows * ROW_SIZE)));
     printf("Possible same row (index: %d): %ld\n", same_rows, virt_to_phys((uint64_t)(base + same_rows * ROW_SIZE)));
 
     print_results(bank_latency, num_iterations - 1);    

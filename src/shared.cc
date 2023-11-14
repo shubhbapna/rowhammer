@@ -85,7 +85,6 @@ uint64_t virt_to_phys(uint64_t virt_addr) {
   FILE * pagemap;
   uint64_t entry;
 
-  // TODO: Exercise 1-1
   // Compute the virtual page number from the virtual address
   uint64_t virt_page_offset = get_offset(virt_addr);
   uint64_t virt_page_number = get_frame_number(virt_addr);
@@ -97,9 +96,6 @@ uint64_t virt_to_phys(uint64_t virt_addr) {
         // 1ULL = 1 unsigned long long
         if (entry & (1ULL << 63)) { 
           uint64_t phys_page_number = entry & ((1ULL << 54) - 1);
-          // TODO: Exercise 1-1
-          // Using the extracted physical page number, derive the physical address
-          // physical addr is of the form: |PFN|OFFSET
           phys_addr = (phys_page_number << PAGE_SIZE_BITS) | virt_page_offset;
         } 
       }
