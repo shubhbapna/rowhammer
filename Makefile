@@ -6,7 +6,7 @@ clean:
 
 histogram: bin/histogram src/histogram.py
 	./bin/histogram > histogram.out
-	python3 src/histogram.py 20
+	python3 src/histogram.py
 	cat histogram.out
 	rm histogram.out
 
