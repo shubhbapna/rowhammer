@@ -80,5 +80,7 @@ Revision Code                                    0x4E30
 
 Number of SDRAM DIMMs detected and decoded: 1
 
-row size = 64 * 2^10 = 8 KB
+Number of rows per bank = 2^16
+Number of columns per row = 2^10
+row size = 64 * 2^10 bits = 8KB
 No ecc since total and data width are the same (64 each)

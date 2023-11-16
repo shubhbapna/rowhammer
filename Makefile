@@ -1,11 +1,11 @@
 CC=g++
 
-all: bin/gather
+all: bin/histogram
 clean:
-	rm -f bin/gather
+	rm -f bin/histogram
 
-bin/gather: bin src/gather.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
-	$(CC) -std=c++11 -g -o $@ src/gather.cc src/util.hh src/shared.cc
+bin/histogram: bin src/histogram.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
+	$(CC) -std=c++11 -g -o $@ src/histogram.cc src/util.hh src/shared.cc
 
 bin:
 	mkdir bin

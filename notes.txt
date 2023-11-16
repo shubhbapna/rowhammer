@@ -15,3 +15,11 @@ One possibility is to use knowledge of how the CPU’s memory controller maps ph
 The absolute physical addresses of memory we have access to. Linux allows this via /proc/PID/pagemap.
 The relative physical addresses of memory we have access to. Linux can allow this via its support for “huge pages”, which cover 2MB of contiguous physical address space per page. Whereas a normal 4k page is smaller than a typical DRAM row, a 2MB page will typically cover multiple rows, some of which will be in the same bank.
 Yoongu Kim et al take this approach. They pick Y = X + 8MByte based on knowledge of the physical address mapping used by the memory controllers in Intel and AMD’s CPUs.
+
+-----------------------------------------
+
+Create histogram to figure out latencies of row buffer hits (fast access due to same bank, same row or different banks) and row buffer conflicts (same buffer, different rows) (put latencies into bucket )
+
+This will give you the timings that you need to classify different addresses into either row buffer hit or conflict.
+
+Say you found address X, Y has row buffer conflict. Take address A which has a row buffer hit with X but conflict with Y. This gives you column bit
