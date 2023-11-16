@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
             time += measure_bank_latency((uint64_t)base, (uint64_t)(base + i * ROW_SIZE));
         }
         time = time / SAMPLES;
-        bank_lat_histogram[time % BUCKET_LAT_STEP]++;
+        bank_lat_histogram[time / BUCKET_LAT_STEP]++;
     }
 
     //Print the Histogram
@@ -27,8 +27,8 @@ int main(int argc, char **argv) {
     puts("-------------------------------------------------------");
 
     for (int i=0; i<NUM_LAT_BUCKETS ;i++){
-        printf("%d   \t %15ld \n",
-	    i*BUCKET_LAT_STEP, bank_lat_histogram[i]);
+        printf("[%d-%d)   \t %15ld \n",
+	    i*BUCKET_LAT_STEP, i*BUCKET_LAT_STEP + BUCKET_LAT_STEP, bank_lat_histogram[i]);
     }
     printf("%d+   \t %15ld \n",NUM_LAT_BUCKETS*BUCKET_LAT_STEP, bank_lat_histogram[NUM_LAT_BUCKETS]);
 
