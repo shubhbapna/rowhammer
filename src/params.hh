@@ -14,14 +14,14 @@
 #define HAMMERS_PER_ITER 5000000
 
 // number of sample for measuring bank latency
-#define SAMPLES 1000
+#define SAMPLES 100
 
 #define PAGE_SIZE_BITS 12
 
 //Num Latency Buckets.
-#define NUM_LAT_BUCKETS (20)
+#define NUM_LAT_BUCKETS (50)
 
 //Each Bucket Step.
-#define BUCKET_LAT_STEP (50)
+#define BUCKET_LAT_STEP (20)
 
 #endif
