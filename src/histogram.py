@@ -1,10 +1,8 @@
 import matplotlib.pyplot as plt
-import sys
 
 # Initialize lists to store data
 latency = []
 count = []
-miss_count = []
 
 # Read data from the file
 with open('histogram.out', 'r') as file:
@@ -18,7 +16,7 @@ with open('histogram.out', 'r') as file:
 
 # Create the bar plot
 plt.figure(figsize=(10, 6))
-plt.bar(range(len(latency)), count, width=int(sys.argv[1]), label='counts', color='b', alpha=0.7, align='center', tick_label=latency)
+plt.bar([i + 2 for i in range(len(latency))], count, label='counts', color='b', alpha=0.7, align='center', tick_label=latency)
 plt.xlabel('Latency(cycles)')
 plt.ylabel('Count')
 plt.title('Address Count by Latency')
