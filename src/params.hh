@@ -24,4 +24,10 @@
 //Each Bucket Step.
 #define BUCKET_LAT_STEP (20)
 
+#define ROW_BUFFER_CONFLICT_LATENCY_MIN (235)
+
+#define ROW_BUFFER_CONFLICT_LATENCY_MAX (265)
+
+#define ROW_BUFFER_HIT_LATENCY (210)
+
 #endif

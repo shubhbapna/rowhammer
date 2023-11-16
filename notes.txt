@@ -23,3 +23,9 @@ Create histogram to figure out latencies of row buffer hits (fast access due to 
 This will give you the timings that you need to classify different addresses into either row buffer hit or conflict.
 
 Say you found address X, Y has row buffer conflict. Take address A which has a row buffer hit with X but conflict with Y. This gives you column bit
+
+
+get the index where either top decile or max appears and use that to create a second address
+print the 2 addresses (convert to physical address) and compare the bits and check if it matches the bank address mapping typically used
+once that is figured out you can construct any 2 addresses given address n that lie in the same bank but are n + 1 and n - 1 rows away
+then hammer

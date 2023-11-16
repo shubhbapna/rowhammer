@@ -31,9 +31,4 @@ int main(int argc, char **argv) {
 	    i*BUCKET_LAT_STEP, i*BUCKET_LAT_STEP + BUCKET_LAT_STEP, bank_lat_histogram[i]);
     }
     printf("%d+   \t %15ld \n",NUM_LAT_BUCKETS*BUCKET_LAT_STEP, bank_lat_histogram[NUM_LAT_BUCKETS]);
-
-    // get the index where either top decile or max appears and use that to create a second address
-    // print the 2 addresses (convert to physical address) and compare the bits and check if it matches the bank address mapping typically used
-    // once that is figured out you can construct any 2 addresses given address n that lie in the same bank but are n + 1 and n - 1 rows away
-    // then hammer
 }
