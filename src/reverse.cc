@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     }
     uint64_t x = virt_to_phys((uint64_t) base);
     uint64_t y = virt_to_phys((uint64_t) (base + i * ROW_SIZE));
-    printf("X: %ld, Y: %ld", x, y);
+    printf("X: %ld, Y: %ld, ", x, y);
 
     int j;
     for (j = 1; j < num_iterations; j++) {
@@ -46,5 +46,5 @@ int main(int argc, char **argv) {
     }
 
     uint64_t a = virt_to_phys((uint64_t) (base + j * ROW_SIZE));
-    printf("A: %ld", a);
+    printf("A: %ld\n", a);
 }
