@@ -84,3 +84,11 @@ Number of rows per bank = 2^16
 Number of columns per row = 2^10
 row size = 64 * 2^10 bits = 8KB
 No ecc since total and data width are the same (64 each)
+
+X: 10000101100110110011000 0000000000
+Y: 10000111011010101001100 0000000000
+A: 10000010011101011101100 0000000000 
+
+X, Y => conflict
+X, A => row buffer hit
+Y, A => conflict
