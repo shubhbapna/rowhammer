@@ -25,9 +25,10 @@ int main(int argc, char **argv) {
 
     uint64_t x = virt_to_phys((uint64_t) base);
     uint64_t y = virt_to_phys((uint64_t) (base + index_y * ROW_SIZE));
-    printf("X: %ld, Y: %ld, ", x, y);
+    printf("X: %ld, Y: %ld\n", x, y);
 
-    int index_a;
+    int index_a[5];
+    int count = 0;
     for (int i = 1; i < num_iterations; i++) {
         if (i == index_y) continue;
         
@@ -44,12 +45,15 @@ int main(int argc, char **argv) {
             }
             time = time / SAMPLES;
             if (ROW_BUFFER_CONFLICT_LATENCY_MIN < time) {
-                index_a = i;
-                break;
+                if (count >=5 ) break;
+                index_a[count] = i;
+                count++;
             }    
         }
     }
 
-    uint64_t a = virt_to_phys((uint64_t) (base + index_a * ROW_SIZE));
-    printf("A: %ld\n", a);
+    for (int i = 0; i < count; i++) {
+        uint64_t a = virt_to_phys((uint64_t) (base + index_a[i] * ROW_SIZE));
+        printf("A: %ld\n", a);
+    }
 }
