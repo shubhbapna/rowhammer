@@ -25,7 +25,8 @@ int main(int argc, char **argv) {
 
     uint64_t x = virt_to_phys((uint64_t) base);
     uint64_t y = virt_to_phys((uint64_t) (base + index_y * ROW_SIZE));
-    printf("X: %ld, Y: %ld\n", x, y);
+    printf("X: %ld (phys)\t%ld (virt)\n", x, (uint64_t) base);
+    printf("Y: %ld (phys)\t%ld (virt)\n", y, (uint64_t) (base + index_y * ROW_SIZE));
 
     int index_a[5];
     int count = 0;
@@ -54,6 +55,6 @@ int main(int argc, char **argv) {
 
     for (int i = 0; i < count; i++) {
         uint64_t a = virt_to_phys((uint64_t) (base + index_a[i] * ROW_SIZE));
-        printf("A: %ld\n", a);
+        printf("A: %ld(phy)\t%ld\n", a, (uint64_t) (base + index_a[i] * ROW_SIZE));
     }
 }
