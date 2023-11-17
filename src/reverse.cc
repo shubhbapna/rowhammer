@@ -9,6 +9,12 @@ int main(int argc, char **argv) {
     
     const long int num_iterations = BUFFER_SIZE_MB / ROW_SIZE;
     char *base = (char *)allocated_mem;
+    uint64_t same_row_lat = 0;
+    for (int k = 0; k < SAMPLES; k++) {
+        same_row_lat += measure_bank_latency((uint64_t)base, (uint64_t)(base));
+    }
+    same_row_lat = same_row_lat / SAMPLES;
+    printf("Same row latency: %ld", same_row_lat);
 
     int index_y;
     for (int i = 1; i < num_iterations; i++) {
