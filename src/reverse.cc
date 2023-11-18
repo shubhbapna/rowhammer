@@ -12,7 +12,6 @@ int main(int argc, char **argv) {
     
     uint64_t same_row_lat = 0;
     // warm the address up
-    measure_bank_latency((uint64_t)base, (uint64_t)(base));
     for (int k = 0; k < SAMPLES; k++) {
         same_row_lat += measure_bank_latency((uint64_t)base, (uint64_t)(base));
     }
@@ -23,7 +22,6 @@ int main(int argc, char **argv) {
     for (int i = 1; i < num_iterations; i++) {
         uint64_t time = 0;
         // warm the address up to avoid page faults and TLB misses
-        measure_bank_latency((uint64_t)base, (uint64_t)(base + i * ROW_SIZE));
         for (int k = 0; k < SAMPLES; k++) {
             time += measure_bank_latency((uint64_t)base, (uint64_t)(base + i * ROW_SIZE));
         }
@@ -45,7 +43,6 @@ int main(int argc, char **argv) {
         if (i == index_y) continue;
         
         uint64_t time = 0;
-        measure_bank_latency((uint64_t)base, (uint64_t)(base + i * ROW_SIZE));
         for (int k = 0; k < SAMPLES; k++) {
             time += measure_bank_latency((uint64_t)base, (uint64_t)(base + i * ROW_SIZE));
         }
@@ -53,7 +50,6 @@ int main(int argc, char **argv) {
         
         if (time < ROW_BUFFER_HIT_LATENCY) {
             time = 0;
-            measure_bank_latency((uint64_t)(base + index_y * ROW_SIZE), (uint64_t)(base + i * ROW_SIZE));
             for (int k = 0; k < SAMPLES; k++) {
                 time += measure_bank_latency((uint64_t)(base + index_y * ROW_SIZE), (uint64_t)(base + i * ROW_SIZE));
             }
