@@ -15,6 +15,9 @@ bin/histogram: bin src/histogram.cc src/shared.cc src/shared.hh src/params.hh sr
 bin/reverse: bin src/reverse.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
 	$(CC) -std=c++11 -g -o $@ src/reverse.cc src/util.hh src/shared.cc
 
+bin/reverse-rows: bin src/reverse-rows.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
+	$(CC) -std=c++11 -g -o $@ src/reverse-rows.cc src/util.hh src/shared.cc
+
 bin:
 	mkdir bin
 
