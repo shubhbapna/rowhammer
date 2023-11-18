@@ -18,6 +18,14 @@ static inline void clflush(uint64_t addr)
 		: /*clobbers*/ );
 }
 
+/* Flush a cache block of address "addr" */
+static inline void mfence()
+{
+  asm volatile ("mfence"
+		: /*output*/
+		: /*input*/
+		: /*clobbers*/ );
+}
 
 /* Load address "addr" */
 static inline void maccess(uint64_t addr)

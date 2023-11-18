@@ -9,6 +9,7 @@ int main(int argc, char **argv) {
     
     const long int num_iterations = BUFFER_SIZE_MB / ROW_SIZE;
     char *base = (char *)allocated_mem;
+    
     uint64_t same_row_lat = 0;
     // warm the address up
     measure_bank_latency((uint64_t)base, (uint64_t)(base));
@@ -27,7 +28,7 @@ int main(int argc, char **argv) {
             time += measure_bank_latency((uint64_t)base, (uint64_t)(base + i * ROW_SIZE));
         }
         time = time / SAMPLES;
-        if (ROW_BUFFER_CONFLICT_LATENCY_MIN < time) {
+        if (ROW_BUFFER_CONFLICT_LATENCY < time) {
             index_y = i;
             break;
         }
@@ -57,7 +58,7 @@ int main(int argc, char **argv) {
                 time += measure_bank_latency((uint64_t)(base + index_y * ROW_SIZE), (uint64_t)(base + i * ROW_SIZE));
             }
             time = time / SAMPLES;
-            if (ROW_BUFFER_CONFLICT_LATENCY_MIN < time) {
+            if (ROW_BUFFER_CONFLICT_LATENCY < time) {
                 if (count >=5 ) break;
                 index_a[count] = i;
                 count++;
