@@ -31,8 +31,7 @@ uint64_t get_offset(uint64_t addr) {
  *               page's physical page number.
  *
  */
-void setup_PPN_VPN_map(void * mem_map, uint64_t memory_size, std::map<uint64_t, uint64_t> &PPN_VPN_map) {
-  // TODO - Exercise 1-3
+void setup_PPN_VPN_map(void * mem_map, uint64_t memory_size) {
   for (uint64_t i = 0; i < memory_size; i += PAGE_SIZE) {
     uint64_t * addr = (uint64_t *) ((uint8_t *) (mem_map) + i);
     uint64_t vpn = get_frame_number((uint64_t)addr);
@@ -120,7 +119,6 @@ uint64_t virt_to_phys(uint64_t virt_addr) {
  */
 
 uint64_t phys_to_virt(uint64_t phys_addr) {
-  // TODO: Exercise 1-3
   uint64_t virt_addr = 0;
   uint64_t ppn = get_frame_number(phys_addr);
   uint64_t offset = get_offset(phys_addr);
