@@ -11,10 +11,6 @@ int main(int argc, char **argv) {
     char *base = (char *)allocated_mem;
     for (int i = 1; i < num_iterations; i++) {
         uint64_t time = 0;
-        // warm up the addresses to avoid page faults and TLB misses in our timings
-        maccess((uint64_t)(base + i * ROW_SIZE));
-        maccess((uint64_t) base);
-        mfence();
         for (int j = 0; j < SAMPLES; j++) {
             time += measure_bank_latency((uint64_t)base, (uint64_t)(base + i * ROW_SIZE));
         }
