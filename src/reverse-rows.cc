@@ -17,7 +17,6 @@ int main(int argc, char **argv) {
         uint64_t addr0 = phys_to_virt(addr ^ (addr & (1 << x)));
         uint64_t addr1 = phys_to_virt(addr | (1  << x));
         if (addr0 == 0 || addr1 == 0) continue;
-        for (int sleep = 0; sleep < 10000; sleep++);
         uint64_t time = 0;
         for (int k = 0; k < SAMPLES; k++) {
             time += measure_bank_latency(addr0, addr1);

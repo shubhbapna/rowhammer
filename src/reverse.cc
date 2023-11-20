@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
         }
         time = time / SAMPLES;
         // keeping less than 500 to avoid noise
-        if (ROW_BUFFER_CONFLICT_LATENCY <= time < 500) {
+        if (ROW_BUFFER_CONFLICT_LATENCY <= time && time < 500) {
             conflicts.insert(i);
         }
     }
@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
                 three_address_access += measure_bank_latency3((uint64_t)base, (uint64_t)(base + a * ROW_SIZE), (uint64_t)(base + b * ROW_SIZE));
             }
             three_address_access = three_address_access / SAMPLES;
-            if (three_address_access > two_address_access + 10); {
+            if (three_address_access > two_address_access + 10) {
                 flag = 1;
                 index_b = b;
                 break;
