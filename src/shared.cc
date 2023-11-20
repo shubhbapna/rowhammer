@@ -144,24 +144,11 @@ uint64_t measure_bank_latency(uint64_t addr_A, uint64_t addr_B) {
   clflush(addr_A);
   clflush(addr_B);
 
-  maccess(addr_A);
-  maccess(addr_B);
-  
+  // make sure row buffer has A
+  maccess(addr_A);  
   clflush(addr_A);
   
-  return maccess_t(addr_A);  
-}
-
-uint64_t measure_bank_latency2(uint64_t addr_A, uint64_t addr_B) {
-  clflush(addr_A);
-  clflush(addr_B);
-
-  uint64_t start = rdtscp();
-  maccess(addr_A);
-  maccess(addr_B);
-  uint64_t end = rdtscp();
-
-  return end - start;    
+  return two_maccess_t(addr_A, addr_B);  
 }
 
 uint64_t measure_bank_latency3(uint64_t addr_X, uint64_t addr_A, uint64_t addr_B) {
@@ -169,11 +156,9 @@ uint64_t measure_bank_latency3(uint64_t addr_X, uint64_t addr_A, uint64_t addr_B
   clflush(addr_A);
   clflush(addr_B);
 
-  uint64_t start = rdtscp();
-  maccess(addr_X);
-  maccess(addr_A);
-  maccess(addr_B);
-  uint64_t end = rdtscp();
-
-  return end - start;  
+  // make sure row buffer has X
+  maccess(addr_X);  
+  clflush(addr_X);
+  
+  return three_maccess_t(addr_X, addr_A, addr_B);  
 }

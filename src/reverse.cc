@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     for (int a: conflicts) {
         uint64_t two_address_access = 0;
         for (int trials = 0; trials < SAMPLES; trials++){
-            two_address_access += measure_bank_latency2((uint64_t)base, (uint64_t)(base + a * ROW_SIZE));
+            two_address_access += measure_bank_latency((uint64_t)base, (uint64_t)(base + a * ROW_SIZE));
         }
         two_address_access = two_address_access / SAMPLES;
         
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
             if (a == b) break;
             uint64_t three_address_access = 0;
             for (int trials = 0; trials < SAMPLES; trials++){
-                three_address_access += measure_bank_latency2((uint64_t)base, (uint64_t)(base + a * ROW_SIZE));
+                three_address_access += measure_bank_latency3((uint64_t)base, (uint64_t)(base + a * ROW_SIZE), (uint64_t)(base + b * ROW_SIZE));
             }
             three_address_access = three_address_access / SAMPLES;
             if (three_address_access > two_address_access + 10); {

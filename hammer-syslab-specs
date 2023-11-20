@@ -84,6 +84,9 @@ Number of rows per bank = 2^16
 Number of columns per row = 2^10
 row size = 64 * 2^10 bits = 8KB
 No ecc since total and data width are the same (64 each)
+CPU freq = 3.3 GHz
+1 clock cycle for 1 GHz = 1 ns
+1 clock cycle for 3.3 GHz = approx 1/3 ns
 
 X, Y => conflict
 X, A => row buffer hit

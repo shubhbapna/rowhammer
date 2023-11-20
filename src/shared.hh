@@ -32,7 +32,6 @@ uint64_t phys_to_virt(uint64_t phys_addr);
 uint8_t phys_to_bankid(uint64_t phys_ptr, uint8_t candidate);
 void setup_PPN_VPN_map(void * mem_map, uint64_t memory_size);
 uint64_t measure_bank_latency(uint64_t addr_A, uint64_t addr_B);
-uint64_t measure_bank_latency2(uint64_t addr_A, uint64_t addr_B);
 uint64_t measure_bank_latency3(uint64_t addr_X, uint64_t addr_A, uint64_t addr_B);
 
 
