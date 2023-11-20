@@ -92,10 +92,9 @@ int main(int argc, char **argv) {
         addr = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % num_iterations));
         uint64_t virt_addr = virt_to_phys(addr);
         uint64_t row = (virt_addr >> 16) & 0xffff;
-        uint64_t remaining_bits = virt_addr & 0xffff;
 
-        addr_a = phys_to_virt(((row + 1) << 16) | remaining_bits); // addr + 1
-        addr_b = phys_to_virt(((row - 1) << 16) | remaining_bits); // addr - 1
+        addr_a = phys_to_virt(((row + 1) << 16) | virt_addr); // addr + 1
+        addr_b = phys_to_virt(((row - 1) << 16) | virt_addr); // addr - 1
         if (addr_a != 0 && addr_b != 0) break;
     }
 
