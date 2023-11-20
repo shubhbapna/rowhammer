@@ -151,3 +151,29 @@ uint64_t measure_bank_latency(uint64_t addr_A, uint64_t addr_B) {
   
   return maccess_t(addr_A);  
 }
+
+uint64_t measure_bank_latency2(uint64_t addr_A, uint64_t addr_B) {
+  clflush(addr_A);
+  clflush(addr_B);
+
+  uint64_t start = rdtscp();
+  maccess(addr_A);
+  maccess(addr_B);
+  uint64_t end = rdtscp();
+
+  return end - start;    
+}
+
+uint64_t measure_bank_latency3(uint64_t addr_X, uint64_t addr_A, uint64_t addr_B) {
+  clflush(addr_X);
+  clflush(addr_A);
+  clflush(addr_B);
+
+  uint64_t start = rdtscp();
+  maccess(addr_X);
+  maccess(addr_A);
+  maccess(addr_B);
+  uint64_t end = rdtscp();
+
+  return end - start;  
+}

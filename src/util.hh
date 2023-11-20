@@ -67,5 +67,11 @@ static inline uint64_t maccess_t(uint64_t addr)
 	return cycles;
 }
 
+static inline uint64_t rdtscp() {
+  uint32_t low, high;
+  asm volatile ("rdtscp": "=a" (low), "=d" (high) :: "ecx");
+  return (((uint64_t)high) << 32) | low;
+}
+
 #endif // _UTILITY_H__ 
 
