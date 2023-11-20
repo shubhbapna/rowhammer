@@ -96,6 +96,7 @@ int main(int argc, char **argv) {
 
         addr_a = phys_to_virt(((row + 1) << 16) | remaining_bits); // addr + 1
         addr_b = phys_to_virt(((row - 1) << 16) | remaining_bits); // addr - 1
+        if (addr_a != 0 && addr_b != 0) break;
     }
 
     if (tries <= 0) {
