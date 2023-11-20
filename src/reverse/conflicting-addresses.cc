@@ -3,6 +3,20 @@
 #include "../params.hh"
 #include <set>
 
+char *int_to_binary(uint64_t num)
+{
+    int num_bits = 33;
+
+    char *binary = (char *) calloc(num_bits + 1, 1);
+	
+    for (int i = num_bits - 1; i >= 0; i--) {
+        binary[i] = (num & 1) + '0';
+        num >>= 1;
+    }
+    binary[num_bits] = '\0';
+    return binary;
+}
+
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
     allocated_mem = allocate_pages(BUFFER_SIZE_MB);
@@ -55,7 +69,12 @@ int main(int argc, char **argv) {
     uint64_t x = virt_to_phys((uint64_t) base);
     uint64_t a = virt_to_phys((uint64_t) (base + index_a * ROW_SIZE));
     uint64_t b = virt_to_phys((uint64_t) (base + index_b * ROW_SIZE));
-    printf("X: %ld (phys)\t%ld (virt)\n", x, (uint64_t) base);
-    printf("A: %ld (phys)\t%d (virt)\n", a, index_a);
-    printf("B: %ld (phys)\t%d (virt)\n", b, index_b);
+    printf("X: %s\t%ld (phys)\t%ld (virt)\n", int_to_binary(x), x, (uint64_t) base);
+    printf("A: %s\t%ld (phys)\t%d (virt)\n", int_to_binary(a), a, index_a);
+    printf("B: %s\t%ld (phys)\t%d (virt)\n", int_to_binary(b), b, index_b);
+
+    printf("\nHypothesis:\n");
+    printf("\tCol bits: 0-12\n");
+    printf("\tBank xor bits: 13-15\n");
+    printf("\tRow bits: 16-31\n");
 }
