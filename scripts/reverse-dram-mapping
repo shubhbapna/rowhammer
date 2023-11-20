@@ -1,7 +1,8 @@
 #!/bin/bash
+SOURCE=$(dirname -- "${BASH_SOURCE[0]}")
 
 echo "generating conflicting addresses"
-./scripts/conflicting-addresses
+$SOURCE/conflicting-addresses
 
 echo "confirming column bits"
-./scripts/detect-col-bits
+$SOURCE/detect-col-bits
