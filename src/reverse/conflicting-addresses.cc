@@ -101,6 +101,7 @@ int main(int argc, char **argv) {
 
     if (tries <= 0) {
         printf("Could not verify try again\n");
+        exit(1);
     }
 
     uint64_t two_address_access = two_address_latency(addr, addr_a);
