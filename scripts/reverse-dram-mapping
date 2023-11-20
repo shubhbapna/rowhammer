@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "generating conflicting addresses"
+./scripts/conflicting-addresses
+
+echo "confirming column bits"
+./scripts/detect-col-bits

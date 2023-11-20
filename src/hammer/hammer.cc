@@ -1,5 +1,5 @@
-#include "./shared.hh"
-#include "./params.hh"
+#include "../shared.hh"
+#include "../params.hh"
 
 /*
  * hammer_addresses

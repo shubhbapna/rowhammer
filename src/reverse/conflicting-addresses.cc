@@ -1,6 +1,6 @@
-#include "shared.hh"
-#include "util.hh"
-#include "params.hh"
+#include "../shared.hh"
+#include "../util.hh"
+#include "../params.hh"
 #include <set>
 
 int main(int argc, char **argv) {
@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
                 three_address_access += measure_bank_latency3((uint64_t)base, (uint64_t)(base + a * ROW_SIZE), (uint64_t)(base + b * ROW_SIZE));
             }
             three_address_access = three_address_access / SAMPLES;
-            if (three_address_access > two_address_access + 10) {
+            if (three_address_access > two_address_access + 120) {
                 flag = 1;
                 index_b = b;
                 break;

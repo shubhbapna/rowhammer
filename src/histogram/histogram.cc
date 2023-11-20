@@ -1,6 +1,6 @@
-#include "shared.hh"
-#include "util.hh"
-#include "params.hh"
+#include "../shared.hh"
+#include "../util.hh"
+#include "../params.hh"
 
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
