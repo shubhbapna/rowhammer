@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     if (
         two_address_access_time < 600 
         && two_address_access_time >= ROW_BUFFER_CONFLICT_LATENCY 
-        && three_address_access_time > three_address_access_time + 120
+        && three_address_access_time > two_address_access_time + 120
     ) {
         printf("Hypothesis confirmed! Found row conflict\n");
     } else {
