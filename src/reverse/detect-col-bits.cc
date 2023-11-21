@@ -6,8 +6,9 @@
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
     // 90% of phy mem
-    allocated_mem = allocate_pages(1.8 * BUFFER_SIZE_MB);
-    setup_PPN_VPN_map(allocated_mem, 1.8 * BUFFER_SIZE_MB);
+    uint64_t mem_size = 1.8 * BUFFER_SIZE_MB;
+    allocated_mem = allocate_pages(mem_size);
+    setup_PPN_VPN_map(allocated_mem, mem_size);
 
     uint64_t* bank_lat_histogram = (uint64_t*) calloc((NUM_LAT_BUCKETS+1), sizeof(uint64_t));
     
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     for (int x = 0; x < 13; x++) {
         uint64_t addr, addr0, addr1;
         while (tries-- > 0) {
-            addr = virt_to_phys((uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % 1000)));
+            addr = virt_to_phys((uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE))));
             addr0 = phys_to_virt(addr ^ (addr & (1 << x)));
             addr1 = phys_to_virt(addr | (1  << x));
             if (addr0 != 0 && addr1 != 0) break;
