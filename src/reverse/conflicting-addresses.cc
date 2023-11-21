@@ -39,6 +39,8 @@ uint64_t three_address_latency(uint64_t x, uint64_t a, uint64_t b) {
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
     allocated_mem = allocate_pages(BUFFER_SIZE_MB);
+    setup_PPN_VPN_map(allocated_mem, BUFFER_SIZE_MB);
+    
     uint64_t* bank_lat_histogram = (uint64_t*) calloc((NUM_LAT_BUCKETS+1), sizeof(uint64_t));
     
     const long int num_iterations = BUFFER_SIZE_MB / ROW_SIZE;
@@ -90,11 +92,11 @@ int main(int argc, char **argv) {
     int tries = 1000;
     while (tries-- > 0) {
         addr = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % num_iterations));
-        uint64_t virt_addr = virt_to_phys(addr);
-        uint64_t row = virt_addr >> 16;
+        uint64_t phys_addr = virt_to_phys(addr);
+        uint64_t row = phys_addr >> 16;
 
-        addr_a = phys_to_virt(((row + 1) << 16) | virt_addr); // addr + 1
-        addr_b = phys_to_virt(((row - 1) << 16) | virt_addr); // addr - 1
+        addr_a = phys_to_virt(((row + 1) << 16) | phys_addr); // addr + 1
+        addr_b = phys_to_virt(((row - 1) << 16) | phys_addr); // addr - 1
         if (addr_a != 0 && addr_b != 0) break;
     }
 
