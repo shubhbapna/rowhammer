@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
         uint64_t addr1 = phys_to_virt(addr | (1  << x));
         uint64_t time = 0;
         for (int k = 0; k < SAMPLES; k++) {
-            time += measure_bank_latency(addr0, addr1);
+            time += measure_bank_latency2(addr0, addr1);
         }
         time = time / SAMPLES;
         rows[x] = time;

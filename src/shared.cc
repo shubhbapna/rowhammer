@@ -11,11 +11,11 @@ std::map<uint64_t, uint64_t> PPN_VPN_map;
 void * allocated_mem;
 
 uint64_t get_frame_number(uint64_t addr) {
-  return addr >> PAGE_SIZE_BITS;
+    return addr >> PAGE_SIZE_BITS;
 }
 
 uint64_t get_offset(uint64_t addr) {
-  return addr & ((1ULL << PAGE_SIZE_BITS) - 1);
+    return addr & ((1ULL << PAGE_SIZE_BITS) - 1);
 }
 
 /*
@@ -32,12 +32,12 @@ uint64_t get_offset(uint64_t addr) {
  *
  */
 void setup_PPN_VPN_map(void * mem_map, uint64_t memory_size) {
-  for (uint64_t i = 0; i < memory_size; i += PAGE_SIZE) {
-    uint64_t * addr = (uint64_t *) ((uint8_t *) (mem_map) + i);
-    uint64_t vpn = get_frame_number((uint64_t)addr);
-    uint64_t ppn = get_frame_number(virt_to_phys((uint64_t)addr));
-    PPN_VPN_map[ppn] = vpn;
-  } 
+    for (uint64_t i = 0; i < memory_size; i += PAGE_SIZE) {
+        uint64_t * addr = (uint64_t *) ((uint8_t *) (mem_map) + i);
+        uint64_t vpn = get_frame_number((uint64_t)addr);
+        uint64_t ppn = get_frame_number(virt_to_phys((uint64_t)addr));
+        PPN_VPN_map[ppn] = vpn;
+    } 
 }
 
 /*
@@ -52,19 +52,19 @@ void setup_PPN_VPN_map(void * mem_map, uint64_t memory_size) {
  * Outputs: A pointer to the beginning of the allocated memory block
  */
 void * allocate_pages(uint64_t memory_size) {
-  void * memory_block = mmap(NULL, memory_size, PROT_READ | PROT_WRITE,
-      MAP_POPULATE | MAP_ANONYMOUS | MAP_PRIVATE , -1, 0);
+    void * memory_block = mmap(NULL, memory_size, PROT_READ | PROT_WRITE,
+        MAP_POPULATE | MAP_ANONYMOUS | MAP_PRIVATE , -1, 0);
   
-  if (memory_block == (void*) - 1) {
-    printf("memory allocation failed: %s\n", strerror(errno));
-  }
+    if (memory_block == (void*) - 1) {
+        printf("memory allocation failed: %s\n", strerror(errno));
+    }
 
-  for (uint64_t i = 0; i < memory_size; i += PAGE_SIZE) {
-    uint64_t * addr = (uint64_t *) ((uint8_t *) (memory_block) + i);
-    *addr = i;
-  } 
+    for (uint64_t i = 0; i < memory_size; i += PAGE_SIZE) {
+        uint64_t * addr = (uint64_t *) ((uint8_t *) (memory_block) + i);
+        *addr = i;
+    } 
 
-  return memory_block;  
+    return memory_block;  
 }
 
 /* 
@@ -79,30 +79,30 @@ void * allocate_pages(uint64_t memory_size) {
  */
 
 uint64_t virt_to_phys(uint64_t virt_addr) {
-  uint64_t phys_addr = 0;
+    uint64_t phys_addr = 0;
 
-  FILE * pagemap;
-  uint64_t entry;
+    FILE * pagemap;
+    uint64_t entry;
 
-  // Compute the virtual page number from the virtual address
-  uint64_t virt_page_offset = get_offset(virt_addr);
-  uint64_t virt_page_number = get_frame_number(virt_addr);
-  uint64_t file_offset = virt_page_number * sizeof(uint64_t);
+    // Compute the virtual page number from the virtual address
+    uint64_t virt_page_offset = get_offset(virt_addr);
+    uint64_t virt_page_number = get_frame_number(virt_addr);
+    uint64_t file_offset = virt_page_number * sizeof(uint64_t);
 
-  if ((pagemap = fopen("/proc/self/pagemap", "r"))) {
-    if (lseek(fileno(pagemap), file_offset, SEEK_SET) == file_offset) {
-      if (fread(&entry, sizeof(uint64_t), 1, pagemap)) {
-        // 1ULL = 1 unsigned long long
-        if (entry & (1ULL << 63)) { 
-          uint64_t phys_page_number = entry & ((1ULL << 54) - 1);
-          phys_addr = (phys_page_number << PAGE_SIZE_BITS) | virt_page_offset;
-        } 
-      }
+    if ((pagemap = fopen("/proc/self/pagemap", "r"))) {
+        if (lseek(fileno(pagemap), file_offset, SEEK_SET) == file_offset) {
+            if (fread(&entry, sizeof(uint64_t), 1, pagemap)) {
+                // 1ULL = 1 unsigned long long
+                if (entry & (1ULL << 63)) { 
+                    uint64_t phys_page_number = entry & ((1ULL << 54) - 1);
+                    phys_addr = (phys_page_number << PAGE_SIZE_BITS) | virt_page_offset;
+                } 
+            }
+        }
+        fclose(pagemap);
     }
-    fclose(pagemap);
-  }
 
-  return phys_addr;
+    return phys_addr;
 }
 
 /*
@@ -119,14 +119,14 @@ uint64_t virt_to_phys(uint64_t virt_addr) {
  */
 
 uint64_t phys_to_virt(uint64_t phys_addr) {
-  uint64_t virt_addr = 0;
-  uint64_t ppn = get_frame_number(phys_addr);
-  uint64_t offset = get_offset(phys_addr);
-  uint64_t vpn = PPN_VPN_map[ppn];
-  if (vpn != 0) {
-    virt_addr = (vpn << PAGE_SIZE_BITS) | offset;
-  }
-  return virt_addr;
+    uint64_t virt_addr = 0;
+    uint64_t ppn = get_frame_number(phys_addr);
+    uint64_t offset = get_offset(phys_addr);
+    uint64_t vpn = PPN_VPN_map[ppn];
+    if (vpn != 0) {
+        virt_addr = (vpn << PAGE_SIZE_BITS) | offset;
+    }
+    return virt_addr;
 }
 
 /*
@@ -140,25 +140,56 @@ uint64_t phys_to_virt(uint64_t phys_addr) {
  * Output: Timing difference (derived by a scheme of your choice)
  *
  */
-uint64_t measure_bank_latency(uint64_t addr_A, uint64_t addr_B) {
-  clflush(addr_A);
-  clflush(addr_B);
+uint64_t measure_bank_latency2(uint64_t addr_A, uint64_t addr_B) {
+    clflush(addr_A);
+    clflush(addr_B);
 
-  // make sure row buffer has A
-  maccess(addr_A);  
-  clflush(addr_A);
+    // make sure row buffer has A
+    maccess(addr_A);  
+    clflush(addr_A);
   
-  return two_maccess_t(addr_A, addr_B);  
+    return two_maccess_t(addr_A, addr_B);  
 }
 
 uint64_t measure_bank_latency3(uint64_t addr_X, uint64_t addr_A, uint64_t addr_B) {
-  clflush(addr_X);
-  clflush(addr_A);
-  clflush(addr_B);
+    clflush(addr_X);
+    clflush(addr_A);
+    clflush(addr_B);
 
-  // make sure row buffer has X
-  maccess(addr_X);  
-  clflush(addr_X);
+    // make sure row buffer has X
+    maccess(addr_X);  
+    clflush(addr_X);
   
-  return three_maccess_t(addr_X, addr_A, addr_B);  
+    return three_maccess_t(addr_X, addr_A, addr_B);  
+}
+
+char *int_to_binary(uint64_t num) {
+    int num_bits = 33;
+
+    char *binary = (char *) calloc(num_bits + 1, 1);
+	
+    for (int i = num_bits - 1; i >= 0; i--) {
+        binary[i] = (num & 1) + '0';
+        num >>= 1;
+    }
+    binary[num_bits] = '\0';
+    return binary;
+}
+
+uint64_t two_address_access_latency(uint64_t a, uint64_t b) {
+    uint64_t two_address_access = 0;
+    for (int trials = 0; trials < SAMPLES; trials++){
+        two_address_access += measure_bank_latency2(a, b);
+    }
+    two_address_access = two_address_access / SAMPLES;
+    return two_address_access;
+}
+
+uint64_t three_address_access_latency(uint64_t x, uint64_t a, uint64_t b) {
+    uint64_t three_address_access = 0;
+    for (int trials = 0; trials < SAMPLES; trials++){
+        three_address_access += measure_bank_latency3(x, a, b);
+    }
+    three_address_access = three_address_access / SAMPLES;
+    return three_address_access;
 }

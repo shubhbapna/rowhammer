@@ -6,3 +6,6 @@ $SOURCE/conflicting-addresses
 
 echo "confirming column bits"
 $SOURCE/detect-col-bits
+
+echo "testing hypothesis"
+$SOURCE/verify-dram-mapping
