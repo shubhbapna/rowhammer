@@ -1,6 +1,6 @@
 CC=g++
 
-all: bin bin/histogram bin/conflicting-addresses bin/detect-col-bits bin/verify-dram-mapping
+all: bin bin/histogram bin/conflicting-addresses bin/detect-col-bits bin/verify-dram-mapping bin/hammer
 clean:
 	rm -rf bin/
 
@@ -15,6 +15,9 @@ bin/verify-dram-mapping: src/reverse/verify-dram-mapping.cc src/shared.cc src/sh
 
 bin/detect-col-bits: src/reverse/detect-col-bits.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
 	$(CC) -std=c++11 -g -O0 -o $@ src/reverse/detect-col-bits.cc src/util.hh src/shared.cc
+
+bin/hammer: src/hammer/hammer.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
+	$(CC) -std=c++11 -g -O0 -o $@ src/hammer/hammer.cc src/util.hh src/shared.cc
 
 bin:
 	mkdir bin
