@@ -11,15 +11,15 @@ uint64_t get_dram_address(uint64_t row, int bank, uint64_t col) {
 
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
-    uint64_t mem_size = 1.8 * BUFFER_SIZE_MB;
-    allocated_mem = allocate_pages(mem_size);
-    setup_PPN_VPN_map(allocated_mem, mem_size);
-
     printf("\nHypothesis:\n");
     printf("\tCol bits: 0-12\n");
     printf("\tBank xor bits: 13-15\n");
     printf("\tRow bits: 16-31\n");
     printf("Confirming...\n");
+
+    uint64_t mem_size = 1.8 * BUFFER_SIZE_MB;
+    allocated_mem = allocate_pages(mem_size);
+    setup_PPN_VPN_map(allocated_mem, mem_size);
 
     uint64_t addr, addr_a, addr_b;
     int tries = 1000;
@@ -43,6 +43,15 @@ int main(int argc, char **argv) {
 
     uint64_t two_address_access_time = two_address_access_latency(addr, addr_a);
     uint64_t three_address_access_time = three_address_access_latency(addr, addr_a, addr_b);
+    
+    uint64_t x = virt_to_phys(addr);
+    uint64_t a = virt_to_phys(addr_a);
+    uint64_t b = virt_to_phys(addr_b);
+    printf("X: %s\t%ld (phys)\n", int_to_binary(x), x);
+    printf("A: %s\t%ld (phys)\n", int_to_binary(a), a);
+    printf("B: %s\t%ld (phys)\n", int_to_binary(b), b);
+    printf("Access time for X and A: %ld\n", two_address_access_time);
+    printf("Access time for X, A, and B: %ld\n", three_address_access_time);
     if (
         two_address_access_time < 600 
         && two_address_access_time >= ROW_BUFFER_CONFLICT_LATENCY 
@@ -51,13 +60,6 @@ int main(int argc, char **argv) {
         printf("Hypothesis confirmed! Found row conflict\n");
     } else {
         printf("Try again\n");
-        uint64_t x = virt_to_phys(addr);
-        uint64_t a = virt_to_phys(addr_a);
-        uint64_t b = virt_to_phys(addr_b);
-        printf("X: %s\t%ld (phys)\n", int_to_binary(x), x);
-        printf("A: %s\t%ld (phys)\n", int_to_binary(a), a);
-        printf("B: %s\t%ld (phys)\n", int_to_binary(b), b);
-        printf("Access time for X and A: %ld\n", two_address_access_time);
-        printf("Access time for X, A, and B: %ld\n", three_address_access_time);
+
     }
 }
