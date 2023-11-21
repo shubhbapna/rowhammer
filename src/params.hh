@@ -26,4 +26,6 @@
 
 #define ROW_BUFFER_CONFLICT_LATENCY (390)
 
+#define ROW_BUFFER_HIT_LATENCY (290)
+
 #endif
