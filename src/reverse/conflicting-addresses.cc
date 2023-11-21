@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
     allocated_mem = allocate_pages(BUFFER_SIZE_MB);
     setup_PPN_VPN_map(allocated_mem, BUFFER_SIZE_MB);
-    
+
     uint64_t* bank_lat_histogram = (uint64_t*) calloc((NUM_LAT_BUCKETS+1), sizeof(uint64_t));
     
     const long int num_iterations = BUFFER_SIZE_MB / ROW_SIZE;
@@ -111,5 +111,11 @@ int main(int argc, char **argv) {
         printf("Hypothesis confirmed! Found row conflict\n");
     } else {
         printf("Try again\n");
+        uint64_t x = virt_to_phys(addr);
+        uint64_t a = virt_to_phys(addr_a);
+        uint64_t b = virt_to_phys(addr_b);
+        printf("X: %s\t%ld (phys)\n", int_to_binary(x), x);
+        printf("A: %s\t%ld (phys)\n", int_to_binary(a), a);
+        printf("B: %s\t%ld (phys)\n", int_to_binary(b), b);
     }
 }
