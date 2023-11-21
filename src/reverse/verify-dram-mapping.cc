@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
         printf("X: %s\t%ld (phys)\n", int_to_binary(x), x);
         printf("A: %s\t%ld (phys)\n", int_to_binary(a), a);
         printf("B: %s\t%ld (phys)\n", int_to_binary(b), b);
-        printf("Access time for X and A: %ld\n", two_address_access_latency);
-        printf("Access time for X, A, and B: %ld\n", three_address_access_latency);
+        printf("Access time for X and A: %ld\n", two_address_access_time);
+        printf("Access time for X, A, and B: %ld\n", three_address_access_time);
     }
 }
