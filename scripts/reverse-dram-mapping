@@ -4,8 +4,8 @@ SOURCE=$(dirname -- "${BASH_SOURCE[0]}")
 echo "generating conflicting addresses"
 $SOURCE/conflicting-addresses
 
-echo "confirming column bits"
+echo -e "\nconfirming column bits"
 $SOURCE/detect-col-bits
 
-echo "testing hypothesis"
+echo -e "\ntesting hypothesis"
 $SOURCE/verify-dram-mapping

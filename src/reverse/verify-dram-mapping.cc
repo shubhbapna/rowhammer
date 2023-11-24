@@ -11,7 +11,7 @@ uint64_t get_dram_address(uint64_t row, int bank, uint64_t col) {
 
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
-    printf("\nHypothesis:\n");
+    printf("Hypothesis:\n");
     printf("\tCol bits: 0-12\n");
     printf("\tBank xor bits: 13-15\n");
     printf("\tRow bits: 16-31\n");
