@@ -1,6 +1,8 @@
 #include "../shared.hh"
 #include "../params.hh"
 #include "../util.hh"
+#include <unistd.h>
+#include <set>
 
 uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t attacker_virt_addr_2) {
 
@@ -79,9 +81,12 @@ int main(int argc, char **argv) {
     uint64_t victim; 
     uint64_t* attacker_1 = (uint64_t*) calloc(1, sizeof(uint64_t));
     uint64_t* attacker_2 = (uint64_t*) calloc(1, sizeof(uint64_t)); 
+    std::set<uint64_t> visited;
 
     while (true) {
         victim = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
+
+        if (visited.count(victim) > 0) continue;
 
         // row + 1, row - 1
         if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
@@ -89,11 +94,17 @@ int main(int argc, char **argv) {
             print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
         }
 
+        sleep(3);
+
         // row + 2, row - 2
         if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 2)) {
             uint32_t num_bit_flips = hammer_addresses(victim, *attacker_1, *attacker_2);
             print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
         }
+
+        visited.insert(victim);
+
+        sleep(3);
     }
 }
 
