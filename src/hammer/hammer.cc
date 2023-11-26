@@ -87,6 +87,10 @@ int main(int argc, char **argv) {
         victim = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
 
         if (visited.count(victim) > 0) continue;
+        if (visited.size() >= mem_size / PAGE_SIZE) {
+            printf("\nTried all addresses\n");
+            break;
+        }
 
         // row + 1, row - 1
         if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
