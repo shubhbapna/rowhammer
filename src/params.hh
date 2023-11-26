@@ -10,8 +10,8 @@
 // Size of DRAM row (1 bank)
 #define ROW_SIZE (8192)
 
-// Number of hammers to perform per iteration
-#define HAMMERS_PER_ITER 400000
+// Number of hammers to perform per iteration: hammer 10x refresh period
+#define HAMMERS_PER_ITER 4000000
 
 // number of sample for measuring bank latency
 #define SAMPLES 100
