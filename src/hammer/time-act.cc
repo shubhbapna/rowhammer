@@ -77,7 +77,7 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
         }
     }
     printf("time to perform 2 ACTS: %ld\n", (measures_2 - measures_1) / HAMMERS_PER_ITER);
-    printf("total time to perform %d ACTS: %ld\n", HAMMERS_PER_ITER, total_time);
+    printf("total time to perform %d ACTS: %f ms\n", HAMMERS_PER_ITER, (total_time * 0.3) / 1000000);
     return number_of_bitflips_in_target; 
 }
 
