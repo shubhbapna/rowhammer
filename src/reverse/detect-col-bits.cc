@@ -9,12 +9,10 @@ int main(int argc, char **argv) {
     uint64_t mem_size = 1.8 * BUFFER_SIZE_MB;
     allocated_mem = allocate_pages(mem_size);
     setup_PPN_VPN_map(allocated_mem, mem_size);
-
-    uint64_t* bank_lat_histogram = (uint64_t*) calloc((NUM_LAT_BUCKETS+1), sizeof(uint64_t));
     
-    uint64_t rows[13] = {0};
+    uint64_t rows[32] = {0};
     int tries = 1000;
-    for (int x = 0; x < 13; x++) {
+    for (int x = 0; x < 32; x++) {
         uint64_t addr, addr0, addr1;
         while (tries-- > 0) {
             addr = virt_to_phys((uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE))));
@@ -23,26 +21,11 @@ int main(int argc, char **argv) {
             if (addr0 != 0 && addr1 != 0) break;
         }
 
-        if (tries <= 0) {
-            printf("Could not get test address. Try again\n");
-            exit(1);
-        }
-        
-        uint64_t time = 0;
-        for (int k = 0; k < SAMPLES; k++) {
-            time += measure_bank_latency2(addr0, addr1);
-        }
-        time = time / SAMPLES;
-        rows[x] = time;
+        if (tries <= 0) continue;
+        rows[x] = two_address_access_latency(addr0, addr1);
     }
 
-    printf("No conflict found in bits: ");
-    for (int i = 0; i < 13; i++) {
-        if (rows[i] < ROW_BUFFER_HIT_LATENCY) {
-            printf("%d ", i);
-        } else {
-            printf("\nConflict found in bit %d", i);
-        }
+    for (int i = 0; i < 32; i++) {
+        printf("Bit %d: %10ld", i, rows[i]);        
     }
-    printf("\n");
 }
