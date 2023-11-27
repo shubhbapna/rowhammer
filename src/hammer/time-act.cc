@@ -87,12 +87,14 @@ int main(int argc, char **argv) {
     uint64_t* attacker_1 = (uint64_t*) calloc(1, sizeof(uint64_t));
     uint64_t* attacker_2 = (uint64_t*) calloc(1, sizeof(uint64_t)); 
 
-    victim = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
+    while (true) {
+        victim = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
+        if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) break;
+    }
+
 
     // row + 1, row - 1
-    if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
-        uint32_t num_bit_flips = hammer_addresses(victim, *attacker_1, *attacker_2);
-        print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
-    }
+    uint32_t num_bit_flips = hammer_addresses(victim, *attacker_1, *attacker_2);
+    print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
 }
 
