@@ -89,6 +89,7 @@ int main(int argc, char **argv) {
         if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
             uint32_t num_bit_flips = hammer_addresses(victim, *attacker_1, *attacker_2);
             print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
+            if (num_bit_flips > 0) break;
         }
 
         sleep(3);
@@ -97,6 +98,7 @@ int main(int argc, char **argv) {
         if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 2)) {
             uint32_t num_bit_flips = hammer_addresses(victim, *attacker_1, *attacker_2);
             print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
+            if (num_bit_flips > 0) break;
         }
 
         sleep(3);

