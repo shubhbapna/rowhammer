@@ -46,6 +46,6 @@ int main(int argc, char **argv) {
     }
 
     for (int i = 0; i < num_bits; i++) {
-        printf("Bit %d: %10ld", i, rows[i]);        
+        printf("Bit %d: %10ld\n", i, rows[i]);        
     }
 }
