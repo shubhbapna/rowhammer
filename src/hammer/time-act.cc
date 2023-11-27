@@ -17,7 +17,7 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
     clflush(attacker_virt_addr_2);
   
     int num_reads = HAMMERS_PER_ITER;
-    uint64_t measures = 0;
+    uint64_t measures_2 = 0;
 
     while (num_reads-- > 0 ) {
         uint64_t start = rdtscp();
@@ -29,10 +29,29 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
             : "rax"
         );
         uint64_t end = rdtscp();
-        measures += end - start;
+        measures_2 += end - start;
         clflush(attacker_virt_addr_1);
         clflush(attacker_virt_addr_2);
     }
+    
+    num_reads = HAMMERS_PER_ITER;
+    uint64_t measures_1 = 0;
+    while (num_reads-- > 0 ) {
+        uint64_t start = rdtscp();
+        asm volatile(
+            "mov (%0), %%rax\n\t"
+            :
+            : "r" (attacker_virt_addr_1)
+            : "rax"
+        );
+        uint64_t end = rdtscp();
+        measures_1 += end - start;
+        // so that row buffer has something else
+        maccess(attacker_virt_addr_2);
+        clflush(attacker_virt_addr_1);
+        clflush(attacker_virt_addr_2);
+    }
+
     uint32_t number_of_bitflips_in_target = 0;
     for (uint32_t index = 0; index < ROW_SIZE; index++) {
         // flush 64 byte cacheline
@@ -41,7 +60,7 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
             number_of_bitflips_in_target++;
         }
     }
-    printf("time to perform 2 ACTS: %ld\n", measures / HAMMERS_PER_ITER);
+    printf("time to perform 2 ACTS: %ld\n", (measures_2 - measures_1) / HAMMERS_PER_ITER);
     return number_of_bitflips_in_target; 
 }
 
