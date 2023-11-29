@@ -7,7 +7,7 @@
 void flush_row(uint8_t *row) {
     // 64 byte cache line
     for (uint32_t index = 0; index < ROW_SIZE; index += 64) {
-        clflush((uint64_t)row[index]);
+        clflush((uint64_t)(row + index));
     }
 }
 
