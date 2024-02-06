@@ -4,11 +4,6 @@
 #include <set>
 #include <cstdlib>
 
-uint64_t get_dram_address(uint64_t row, int bank, uint64_t col) {
-    int bank_xor_bits = (row & 0x7) ^ bank;
-    return (row << 16) | (bank_xor_bits << 13) | col;
-}
-
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
     printf("Hypothesis:\n");

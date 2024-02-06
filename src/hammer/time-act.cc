@@ -81,37 +81,6 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
     return number_of_bitflips_in_target; 
 }
 
-uint64_t get_dram_address(uint64_t row, int bank, uint64_t col) {
-    int bank_xor_bits = (row & 0x7) ^ bank;
-    return (row << 16) | (bank_xor_bits << 13) | col;
-}
-
-bool get_addresses_to_hammer(uint64_t victim, uint64_t *attacker_1, uint64_t *attacker_2, int row_diff) {
-    int tries = 1000;
-    while (tries-- > 0) {
-        uint64_t phys_addr = virt_to_phys(victim);
-        uint64_t row = phys_addr >> 16;
-        uint64_t col = phys_addr & 0x1fff; // 13 bits 
-        int bank_xor_bits = (phys_addr >> 13) & 0x7;
-        int bank = bank_xor_bits ^ (row & 0x7);
-
-        *attacker_1 = phys_to_virt(get_dram_address(row + row_diff, bank, col));
-        *attacker_2 = phys_to_virt(get_dram_address(row - row_diff, bank, col));
-        if (*attacker_1 != 0 && *attacker_2 != 0) return true;
-    }
-    return false;
-}
-
-void print_result(uint64_t victim, uint64_t attacker_1, uint64_t attacker_2, uint32_t num_bit_flips) {
-    uint64_t x = virt_to_phys(victim);
-    uint64_t a = virt_to_phys(attacker_1);
-    uint64_t b = virt_to_phys(attacker_2);
-    printf("victim: %s\t%ld (phys)\n", int_to_binary(x), x);
-    printf("attacker 1: %s\t%ld (phys)\n", int_to_binary(a), a);
-    printf("attacker 2: %s\t%ld (phys)\n", int_to_binary(b), b);
-    printf("Bit flips found: %d\n", num_bit_flips);
-}
-
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
     uint64_t mem_size = 1.8 * BUFFER_SIZE_MB;
