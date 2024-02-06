@@ -1,6 +1,6 @@
 CC=g++
 
-all: bin bin/histogram bin/conflicting-addresses bin/detect-col-bits bin/verify-dram-mapping bin/hammer bin/time-act
+all: bin bin/histogram bin/conflicting-addresses bin/detect-col-bits bin/verify-dram-mapping bin/hammer bin/time-act bin/press
 clean:
 	rm -rf bin/
 
