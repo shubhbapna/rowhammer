@@ -4,8 +4,7 @@
 #include <unistd.h>
 #include <set>
 
-uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t attacker_virt_addr_2) {
-
+uint32_t press(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t attacker_virt_addr_2) {
     // prime
     uint8_t *vict_virt_addr_ptr = reinterpret_cast<uint8_t *>(vict_virt_addr);
     uint8_t *attacker_virt_addr_1_ptr = reinterpret_cast<uint8_t *>(attacker_virt_addr_1);
@@ -18,19 +17,22 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
     flush_row(attacker_virt_addr_1_ptr);
     flush_row(attacker_virt_addr_2_ptr);
   
-    int num_reads = HAMMERS_PER_ITER;
+    for (int iter = 0; iter < PRESS_PER_ITER; iter++) {
+        for (int i = 0; i < PRESS_NUM_AGGR_ACTS; i++) {
+            for (int j = 0; j < PRESS_NUM_READS; j++) {
+                maccess((uint64_t)(attacker_virt_addr_1_ptr + j));
+            }
 
-    while (num_reads-- > 0 ) {
-        asm volatile(
-            "mov (%0), %%rax\n\t"
-            "mov (%1), %%rax\n\t"
-            "clflush (%0)\n\t"
-            "clflush (%1)\n\t"
-            "mfence\n\t"
-            :
-            : "r" (attacker_virt_addr_1), "r" (attacker_virt_addr_2)
-            : "rax"
-        );
+            for (int j = 0; j < PRESS_NUM_READS; j++) {
+                maccess((uint64_t)(attacker_virt_addr_2_ptr + j));
+            }
+
+            for (int j = 0; j < PRESS_NUM_READS; j++) {
+                clflush((uint64_t)(attacker_virt_addr_1_ptr + j));
+                clflush((uint64_t)(attacker_virt_addr_2_ptr + j));
+            }
+            mfence();
+        }
     }
 
     flush_row(vict_virt_addr_ptr);
@@ -56,24 +58,12 @@ int main(int argc, char **argv) {
 
     while (true) {
         victim = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
-
         // row + 1, row - 1
         if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
-            uint32_t num_bit_flips = hammer_addresses(victim, *attacker_1, *attacker_2);
+            uint32_t num_bit_flips = press(victim, *attacker_1, *attacker_2);
             print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
             if (num_bit_flips > 0) break;
         }
-
-        sleep(3);
-
-        // row + 2, row - 2
-        if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 2)) {
-            uint32_t num_bit_flips = hammer_addresses(victim, *attacker_1, *attacker_2);
-            print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
-            if (num_bit_flips > 0) break;
-        }
-
-        sleep(3);
     }
 }
 

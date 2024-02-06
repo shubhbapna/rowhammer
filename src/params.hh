@@ -13,6 +13,12 @@
 // Number of hammers to perform per iteration: hammer 10x refresh period
 #define HAMMERS_PER_ITER 4000000
 
+#define PRESS_PER_ITER 800000
+
+#define PRESS_NUM_READS 10
+
+#define PRESS_NUM_AGGR_ACTS 10
+
 // number of sample for measuring bank latency
 #define SAMPLES 100
 
