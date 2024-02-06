@@ -42,9 +42,9 @@ int main(int argc, char **argv) {
     uint64_t x = virt_to_phys(addr);
     uint64_t a = virt_to_phys(addr_a);
     uint64_t b = virt_to_phys(addr_b);
-    printf("X: %s\t%ld (phys)\n", int_to_binary(x), x);
-    printf("A: %s\t%ld (phys)\n", int_to_binary(a), a);
-    printf("B: %s\t%ld (phys)\n", int_to_binary(b), b);
+    printf("X: %s\t%ld (phys)\n", int_to_binary(x, 33), x);
+    printf("A: %s\t%ld (phys)\n", int_to_binary(a, 33), a);
+    printf("B: %s\t%ld (phys)\n", int_to_binary(b, 33), b);
     printf("Access time for X and A: %ld\n", two_address_access_time);
     printf("Access time for X, A, and B: %ld\n", three_address_access_time);
     if (

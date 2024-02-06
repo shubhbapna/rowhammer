@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
     uint64_t x = virt_to_phys((uint64_t) base);
     uint64_t a = virt_to_phys((uint64_t) (base + index_a * ROW_SIZE));
     uint64_t b = virt_to_phys((uint64_t) (base + index_b * ROW_SIZE));
-    printf("X: %s\t%ld (phys)\t%ld (virt)\n", int_to_binary(x), x, (uint64_t) base);
-    printf("A: %s\t%ld (phys)\t%d (virt)\n", int_to_binary(a), a, index_a);
-    printf("B: %s\t%ld (phys)\t%d (virt)\n", int_to_binary(b), b, index_b);
+    printf("X: %s\t%ld (phys)\t%ld (virt)\n", int_to_binary(x, 33), x, (uint64_t) base);
+    printf("A: %s\t%ld (phys)\t%d (virt)\n", int_to_binary(a, 33), a, index_a);
+    printf("B: %s\t%ld (phys)\t%d (virt)\n", int_to_binary(b, 33), b, index_b);
 }

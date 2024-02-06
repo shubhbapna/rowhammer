@@ -163,9 +163,7 @@ uint64_t measure_bank_latency3(uint64_t addr_X, uint64_t addr_A, uint64_t addr_B
     return three_maccess_t(addr_X, addr_A, addr_B);  
 }
 
-char *int_to_binary(uint64_t num) {
-    int num_bits = 33;
-
+char *int_to_binary(uint64_t num, int num_bits) {
     char *binary = (char *) calloc(num_bits + 1, 1);
 	
     for (int i = num_bits - 1; i >= 0; i--) {
@@ -222,12 +220,37 @@ bool get_addresses_to_hammer(uint64_t victim, uint64_t *attacker_1, uint64_t *at
     return false;
 }
 
+uint32_t count_flips(uint8_t* victim, uint8_t expected) {
+    uint32_t number_of_bitflips = 0;
+    for (uint32_t index = 0; index < ROW_SIZE; index++) {
+        if (victim[index] != expected) {
+            number_of_bitflips++;
+        }
+    }
+    return number_of_bitflips;
+}
+
+void print_diff(uint8_t* victim, uint8_t expected) {
+    for (uint32_t index = 0; index < ROW_SIZE; index++) {
+        if (victim[index] != expected) {
+            printf(RED "%s" RESET, int_to_binary(victim[index], 8));
+        } else {
+            printf("%s", int_to_binary(victim[index], 8));
+        }
+    }
+    printf("\n");
+    for (uint32_t index = 0; index < ROW_SIZE; index++) {
+        printf("%s", int_to_binary(victim[index], 8));
+    }
+    printf("\n");
+}
+
 void print_result(uint64_t victim, uint64_t attacker_1, uint64_t attacker_2, uint32_t num_bit_flips) {
     uint64_t x = virt_to_phys(victim);
     uint64_t a = virt_to_phys(attacker_1);
     uint64_t b = virt_to_phys(attacker_2);
-    printf("victim: %s\t%ld (phys)\n", int_to_binary(x), x);
-    printf("attacker 1: %s\t%ld (phys)\n", int_to_binary(a), a);
-    printf("attacker 2: %s\t%ld (phys)\n", int_to_binary(b), b);
+    printf("victim: %s\t%ld (phys)\n", int_to_binary(x, 33), x);
+    printf("attacker 1: %s\t%ld (phys)\n", int_to_binary(a, 33), a);
+    printf("attacker 2: %s\t%ld (phys)\n", int_to_binary(b, 33), b);
     printf("Bit flips found: %d\n", num_bit_flips);
 }

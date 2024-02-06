@@ -34,14 +34,7 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
     }
 
     flush_row(vict_virt_addr_ptr);
-
-    uint32_t number_of_bitflips_in_target = 0;
-    for (uint32_t index = 0; index < ROW_SIZE; index++) {
-        if (vict_virt_addr_ptr[index] != 0x55) {
-            number_of_bitflips_in_target++;
-        }
-    }
-    return number_of_bitflips_in_target; 
+    return count_flips(vict_virt_addr_ptr, 0x55); 
 }
 
 int main(int argc, char **argv) {

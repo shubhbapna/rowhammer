@@ -1,6 +1,9 @@
 #ifndef PARAMS_GUARD
 #define PARAMS_GUARD
 
+#define RED   "\x1B[31m"
+#define RESET "\x1B[0m"
+
 // Size of allocated buffer = 2GB
 #define BUFFER_SIZE_MB 2147483648UL
 

@@ -37,11 +37,10 @@ uint32_t press(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t 
 
     flush_row(vict_virt_addr_ptr);
 
-    uint32_t number_of_bitflips_in_target = 0;
-    for (uint32_t index = 0; index < ROW_SIZE; index++) {
-        if (vict_virt_addr_ptr[index] != 0x55) {
-            number_of_bitflips_in_target++;
-        }
+    uint32_t number_of_bitflips_in_target = count_flips(vict_virt_addr_ptr, 0x55);
+    print_result(vict_virt_addr, attacker_virt_addr_1, attacker_virt_addr_2, number_of_bitflips_in_target);
+    if (number_of_bitflips_in_target) {
+        print_diff(vict_virt_addr_ptr, 0x55);
     }
     return number_of_bitflips_in_target; 
 }
@@ -61,7 +60,6 @@ int main(int argc, char **argv) {
         // row + 1, row - 1
         if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
             uint32_t num_bit_flips = press(victim, *attacker_1, *attacker_2);
-            print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
             if (num_bit_flips > 0) break;
         }
     }
