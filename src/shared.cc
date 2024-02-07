@@ -233,16 +233,11 @@ uint32_t count_flips(uint8_t* victim, uint8_t expected) {
 void print_diff(uint8_t* victim, uint8_t expected) {
     for (uint32_t index = 0; index < ROW_SIZE; index++) {
         if (victim[index] != expected) {
+            printf("Located bit flip in byte %d\n", index);
             printf(RED "%s" RESET, int_to_binary(victim[index], 8));
-        } else {
-            printf("%s", int_to_binary(victim[index], 8));
+            printf("%s", int_to_binary(expected, 8));
         }
     }
-    printf("\n");
-    for (uint32_t index = 0; index < ROW_SIZE; index++) {
-        printf("%s", int_to_binary(victim[index], 8));
-    }
-    printf("\n");
 }
 
 void print_result(uint64_t victim, uint64_t attacker_1, uint64_t attacker_2, uint32_t num_bit_flips) {
