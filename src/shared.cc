@@ -234,8 +234,8 @@ void print_diff(uint8_t* victim, uint8_t expected) {
     for (uint32_t index = 0; index < ROW_SIZE; index++) {
         if (victim[index] != expected) {
             printf("Located bit flip in byte %d\n", index);
-            printf(RED "%s" RESET, int_to_binary(victim[index], 8));
-            printf("%s", int_to_binary(expected, 8));
+            printf(RED "%s\n" RESET, int_to_binary(victim[index], 8));
+            printf("%s\n\n", int_to_binary(expected, 8));
         }
     }
 }
