@@ -67,6 +67,10 @@ void * allocate_pages(uint64_t memory_size) {
     return memory_block;  
 }
 
+void deallocate_pages(void *memory_block, uint64_t memory_size) {
+    munmap(memory_block, memory_size);
+}
+
 /* 
  * virt_to_phys
  *

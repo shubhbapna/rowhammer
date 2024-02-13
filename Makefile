@@ -1,28 +1,28 @@
 CC=g++
 
-all: bin bin/histogram bin/conflicting-addresses bin/detect-col-bits bin/verify-dram-mapping bin/hammer bin/time-act bin/press
+all: bin/histogram bin/conflicting-addresses bin/detect-col-bits bin/verify-dram-mapping bin/hammer bin/time-act bin/press | bin
 clean:
 	rm -rf bin/
 
-bin/histogram: bin src/histogram/histogram.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
+bin/histogram: src/histogram/histogram.cc src/shared.cc src/shared.hh src/params.hh src/util.hh | bin
 	$(CC) -std=c++11 -g -O0 -o $@ src/histogram/histogram.cc src/util.hh src/shared.cc
 
-bin/conflicting-addresses: bin src/reverse/conflicting-addresses.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
+bin/conflicting-addresses: src/reverse/conflicting-addresses.cc src/shared.cc src/shared.hh src/params.hh src/util.hh | bin
 	$(CC) -std=c++11 -g -O0 -o $@ src/reverse/conflicting-addresses.cc src/util.hh src/shared.cc
 
-bin/verify-dram-mapping: bin src/reverse/verify-dram-mapping.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
+bin/verify-dram-mapping: src/reverse/verify-dram-mapping.cc src/shared.cc src/shared.hh src/params.hh src/util.hh | bin
 	$(CC) -std=c++11 -g -O0 -o $@ src/reverse/verify-dram-mapping.cc src/util.hh src/shared.cc
 
-bin/detect-col-bits: bin src/reverse/detect-col-bits.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
+bin/detect-col-bits: src/reverse/detect-col-bits.cc src/shared.cc src/shared.hh src/params.hh src/util.hh | bin
 	$(CC) -std=c++11 -g -O0 -o $@ src/reverse/detect-col-bits.cc src/util.hh src/shared.cc
 
-bin/hammer: bin src/hammer/hammer.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
+bin/hammer: src/hammer/hammer.cc src/shared.cc src/shared.hh src/params.hh src/util.hh | bin
 	$(CC) -std=c++11 -g -O0 -o $@ src/hammer/hammer.cc src/util.hh src/shared.cc
 
-bin/time-act: bin src/hammer/time-act.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
+bin/time-act: src/hammer/time-act.cc src/shared.cc src/shared.hh src/params.hh src/util.hh | bin
 	$(CC) -std=c++11 -g -O0 -o $@ src/hammer/time-act.cc src/util.hh src/shared.cc
 
-bin/press: bin src/press/press.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
+bin/press: src/press/press.cc src/shared.cc src/shared.hh src/params.hh src/util.hh | bin
 	$(CC) -std=c++11 -g -O0 -o $@ src/press/press.cc src/util.hh src/shared.cc
 
 bin:

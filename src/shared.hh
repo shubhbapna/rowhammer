@@ -41,5 +41,6 @@ bool get_addresses_to_hammer(uint64_t victim, uint64_t *attacker_1, uint64_t *at
 void print_result(uint64_t victim, uint64_t attacker_1, uint64_t attacker_2, uint32_t num_bit_flips);
 uint32_t count_flips(uint8_t* victim, uint8_t expected);
 void print_diff(uint8_t* victim, uint8_t expected);
+void deallocate_pages(void *memory_block, uint64_t memory_size);
 
 #endif
