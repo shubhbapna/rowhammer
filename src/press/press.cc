@@ -67,9 +67,6 @@ void press_all() {
 void press_one(uint64_t victim) {
     // allocate only 40% of physical mem
     uint64_t mem_size = 0.8 * BUFFER_SIZE_MB;
-    allocated_mem = allocate_pages(mem_size);
-    setup_PPN_VPN_map(allocated_mem, mem_size);
-
     uint64_t* attacker_1 = (uint64_t*) calloc(1, sizeof(uint64_t));
     uint64_t* attacker_2 = (uint64_t*) calloc(1, sizeof(uint64_t)); 
 
@@ -81,8 +78,12 @@ void press_one(uint64_t victim) {
 
         // row + 1, row - 1
         if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
-            uint32_t num_bit_flips = press(victim, *attacker_1, *attacker_2);
-            if (num_bit_flips > 0) break;
+            try {
+                uint32_t num_bit_flips = press(victim, *attacker_1, *attacker_2);
+                if (num_bit_flips > 0) break;
+            } catch (...) {
+                // ignore exceptions and continue
+            }
         }
     }
 }

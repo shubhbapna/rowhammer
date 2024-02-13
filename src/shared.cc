@@ -68,6 +68,9 @@ void * allocate_pages(uint64_t memory_size) {
 }
 
 void deallocate_pages(void *memory_block, uint64_t memory_size) {
+    if (memory_block == NULL || memory_size == 0) {
+        return;
+    }
     munmap(memory_block, memory_size);
 }
 
