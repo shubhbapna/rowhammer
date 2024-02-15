@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     printf("\tRow bits: 16-31\n");
     printf("Confirming...\n");
 
-    uint64_t mem_size = 1.8 * BUFFER_SIZE_MB;
+    uint64_t mem_size = 1.8 * BUFFER_SIZE;
     allocated_mem = allocate_pages(mem_size);
     setup_PPN_VPN_map(allocated_mem, mem_size);
 

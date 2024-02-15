@@ -5,7 +5,7 @@
 #define RESET "\x1B[0m"
 
 // Size of allocated buffer = 2GB
-#define BUFFER_SIZE_MB 2147483648UL
+#define BUFFER_SIZE 2147483648UL
 
 // Size of hugepages in system
 #define PAGE_SIZE (1 << 12)

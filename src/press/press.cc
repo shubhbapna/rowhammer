@@ -46,7 +46,7 @@ uint32_t press(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t 
 }
 
 void press_all() {
-    uint64_t mem_size = 1.8 * BUFFER_SIZE_MB;
+    uint64_t mem_size = 1.8 * BUFFER_SIZE;
     allocated_mem = allocate_pages(mem_size);
     setup_PPN_VPN_map(allocated_mem, mem_size);
 
@@ -66,7 +66,7 @@ void press_all() {
 
 void press_one(uint64_t victim) {
     // allocate only 40% of physical mem
-    uint64_t mem_size = 0.8 * BUFFER_SIZE_MB;
+    uint64_t mem_size = 0.8 * BUFFER_SIZE;
     uint64_t* attacker_1 = (uint64_t*) calloc(1, sizeof(uint64_t));
     uint64_t* attacker_2 = (uint64_t*) calloc(1, sizeof(uint64_t)); 
 
