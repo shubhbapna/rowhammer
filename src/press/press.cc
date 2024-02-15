@@ -77,7 +77,7 @@ void press_one(uint64_t victim) {
         // row + 1, row - 1
         if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
             try {
-                uint32_t num_bit_flips = press(victim, *attacker_1, *attacker_2);
+                uint32_t num_bit_flips = press(phys_to_virt(victim), *attacker_1, *attacker_2);
                 if (num_bit_flips > 0) break;
             } catch (...) {
                 // ignore exceptions and continue
