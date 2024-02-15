@@ -211,13 +211,12 @@ uint64_t get_dram_address(uint64_t row, int bank, uint64_t col) {
     return (row << 16) | (bank_xor_bits << 13) | col;
 }
 
-bool get_addresses_to_hammer(uint64_t victim, uint64_t *attacker_1, uint64_t *attacker_2, int row_diff) {
+bool get_addresses_to_hammer(uint64_t victim_phys_addr, uint64_t *attacker_1, uint64_t *attacker_2, int row_diff) {
     int tries = 1000;
     while (tries-- > 0) {
-        uint64_t phys_addr = virt_to_phys(victim);
-        uint64_t row = phys_addr >> 16;
-        uint64_t col = phys_addr & 0x1fff; // 13 bits 
-        int bank_xor_bits = (phys_addr >> 13) & 0x7;
+        uint64_t row = victim_phys_addr >> 16;
+        uint64_t col = victim_phys_addr & 0x1fff; // 13 bits 
+        int bank_xor_bits = (victim_phys_addr >> 13) & 0x7;
         int bank = bank_xor_bits ^ (row & 0x7);
 
         *attacker_1 = phys_to_virt(get_dram_address(row + row_diff, bank, col));

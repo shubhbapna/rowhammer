@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
 
     while (true) {
         victim = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
-        if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) break;
+        if (get_addresses_to_hammer(virt_to_phys(victim), attacker_1, attacker_2, 1)) break;
     }
 
 

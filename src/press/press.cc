@@ -56,7 +56,7 @@ void press_all() {
     while (true) {
         victim = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
         // row + 1, row - 1
-        if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
+        if (get_addresses_to_hammer(virt_to_phys(victim), attacker_1, attacker_2, 1)) {
             uint32_t num_bit_flips = press(victim, *attacker_1, *attacker_2);
             if (num_bit_flips > 0) break;
         }

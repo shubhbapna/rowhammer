@@ -51,22 +51,11 @@ int main(int argc, char **argv) {
         victim = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
 
         // row + 1, row - 1
-        if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
+        if (get_addresses_to_hammer(virt_to_phys(victim), attacker_1, attacker_2, 1)) {
             uint32_t num_bit_flips = hammer_addresses(victim, *attacker_1, *attacker_2);
             print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
             if (num_bit_flips > 0) break;
         }
-
-        sleep(3);
-
-        // row + 2, row - 2
-        if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 2)) {
-            uint32_t num_bit_flips = hammer_addresses(victim, *attacker_1, *attacker_2);
-            print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
-            if (num_bit_flips > 0) break;
-        }
-
-        sleep(3);
     }
 }
 
