@@ -64,23 +64,18 @@ void press_all() {
 }
 
 void press_one(uint64_t victim) {
-    // allocate only 10% of physical mem
-    uint64_t mem_size = 0.1 * BUFFER_SIZE;
+    uint64_t mem_size = 1.8 * BUFFER_SIZE;
     uint64_t* attacker_1 = (uint64_t*) calloc(1, sizeof(uint64_t));
     uint64_t* attacker_2 = (uint64_t*) calloc(1, sizeof(uint64_t)); 
 
-    std::vector<void *> allocated_spaces;
-
     while (true) {
-        allocated_mem = allocate_pages(mem_size);
+        void *temp = allocate_pages(mem_size);
+        deallocate_pages(allocated_mem, mem_size);
+        allocated_mem = temp;
         setup_PPN_VPN_map(allocated_mem, mem_size);
-        allocated_spaces.push_back(allocated_mem);
 
         // row + 1, row - 1
         if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
-            for (void *addr: allocated_spaces) {
-                deallocate_pages(addr, mem_size);
-            }
             try {
                 uint32_t num_bit_flips = press(victim, *attacker_1, *attacker_2);
                 if (num_bit_flips > 0) break;
