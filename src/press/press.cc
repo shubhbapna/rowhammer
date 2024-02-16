@@ -82,8 +82,10 @@ void press_one(uint64_t victim) {
         }
     }
 
+    uint64_t victim_virt = phys_to_virt(victim);
+
     while (true) {
-        uint32_t num_bit_flips = press(phys_to_virt(victim), *attacker_1, *attacker_2);
+        uint32_t num_bit_flips = press(victim_virt, *attacker_1, *attacker_2);
         if (num_bit_flips > 0) break;
     }
 }
