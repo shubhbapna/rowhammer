@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
     } else {
         uint64_t victims[argc - 1];
         for (int i = 1; i < argc; i++) {
-            victims[i] = strtol(argv[i], NULL, 10);
+            victims[i - 1] = strtol(argv[i], NULL, 10);
         }
         press_one(victims, argc - 1);
     }
