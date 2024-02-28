@@ -237,21 +237,31 @@ uint32_t count_flips(uint8_t* victim, uint8_t expected) {
 }
 
 void print_diff(uint8_t* victim, uint8_t expected) {
+    char *expected_binary = int_to_binary(expected, 8);
     for (uint32_t index = 0; index < ROW_SIZE; index++) {
         if (victim[index] != expected) {
+            char *victim_binary = int_to_binary(victim[index], 8);
             printf("Located bit flip in byte %d\n", index);
-            printf(RED "%s\n" RESET, int_to_binary(victim[index], 8));
-            printf("%s\n\n", int_to_binary(expected, 8));
+            printf(RED "%s\n" RESET, victim_binary);
+            printf("%s\n\n", expected_binary);
+            free(victim_binary);
         }
     }
+    free(expected_binary);
 }
 
 void print_result(uint64_t victim, uint64_t attacker_1, uint64_t attacker_2, uint32_t num_bit_flips) {
     uint64_t x = virt_to_phys(victim);
     uint64_t a = virt_to_phys(attacker_1);
     uint64_t b = virt_to_phys(attacker_2);
-    printf("victim: %s\t%ld (phys)\n", int_to_binary(x, 33), x);
-    printf("attacker 1: %s\t%ld (phys)\n", int_to_binary(a, 33), a);
-    printf("attacker 2: %s\t%ld (phys)\n", int_to_binary(b, 33), b);
+    char *x_binary = int_to_binary(x, 33);
+    char *a_binary = int_to_binary(a, 33);
+    char *b_binary = int_to_binary(b, 33);
+    printf("victim: %s\t%ld (phys)\n", x_binary, x);
+    printf("attacker 1: %s\t%ld (phys)\n", a_binary, a);
+    printf("attacker 2: %s\t%ld (phys)\n", b_binary, b);
     printf("Bit flips found: %d\n", num_bit_flips);
+    free(x_binary);
+    free(a_binary);
+    free(b_binary);
 }

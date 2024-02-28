@@ -57,5 +57,6 @@ int main(int argc, char **argv) {
             if (num_bit_flips > 0) break;
         }
     }
+    deallocate_pages(allocated_mem, mem_size);
 }
 

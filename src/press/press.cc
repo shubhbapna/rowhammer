@@ -58,9 +58,15 @@ void press_all() {
         // row + 1, row - 1
         if (get_addresses_to_hammer(virt_to_phys(victim), attacker_1, attacker_2, 1)) {
             uint32_t num_bit_flips = press(victim, *attacker_1, *attacker_2);
-            if (num_bit_flips > 0) break;
+            if (num_bit_flips > 0) {
+                printf("Found vulnerable row. Hammering again...\n");
+                num_bit_flips = press(victim, *attacker_1, *attacker_2);
+            }
         }
     }
+    deallocate_pages(allocated_mem, mem_size);
+    free(attacker_1);
+    free(attacker_2);
 }
 
 void press_one(uint64_t *victims, int num_victims) {
@@ -102,7 +108,7 @@ void press_one(uint64_t *victims, int num_victims) {
             if (num_bit_flips > 0) break;
 
             // press random victims
-            for (int j = 0; j < 20; j++) {
+            for (int j = 0; j < 50; j++) {
                 rand_victim = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
                 // row + 1, row - 1
                 if (get_addresses_to_hammer(virt_to_phys(rand_victim), rand_attacker_1, rand_attacker_2, 1)) {
@@ -111,6 +117,11 @@ void press_one(uint64_t *victims, int num_victims) {
             }
         }
     }
+    deallocate_pages(allocated_mem, mem_size);
+    free(attacker_1);
+    free(attacker_2);
+    free(rand_attacker_1);
+    free(rand_attacker_2);
 }
 
 int main(int argc, char **argv) {
