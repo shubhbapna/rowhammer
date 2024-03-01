@@ -2,6 +2,7 @@
 #include "../params.hh"
 #include "../util.hh"
 #include <unistd.h>
+#include <set>
 
 uint32_t press(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t attacker_virt_addr_2) {
     // prime
@@ -71,9 +72,8 @@ void press_all() {
 
 void press_one(uint64_t *victims, int num_victims) {
     uint64_t mem_size = 1.8 * BUFFER_SIZE;
-    uint64_t* attacker_1 = (uint64_t*) calloc(num_victims, sizeof(uint64_t));
-    uint64_t* attacker_2 = (uint64_t*) calloc(num_victims, sizeof(uint64_t)); 
     uint64_t* victims_virt_addr = (uint64_t*) calloc(num_victims, sizeof(uint64_t));
+    std::set<payload *> payloads;
 
     while (true) {
         printf("Attempting to locate physical addresses\n");
@@ -84,9 +84,11 @@ void press_one(uint64_t *victims, int num_victims) {
 
         int i;
         for (i = 0; i < num_victims; i++) {
-            if (get_addresses_to_hammer(victims[i], &attacker_1[i], &attacker_2[i], 1)) {
+            payload *p = (payload *)calloc(1, sizeof(payload));
+            if (get_addresses_to_hammer(victims[i], &(p->attacker1), &(p->attacker2), 1)) {
                 printf("Located victim %d\n", i);
-                victims_virt_addr[i] = phys_to_virt(victims[i]);
+                p->victim = phys_to_virt(victims[i]);
+                payloads.insert(p);
             } else {
                 printf("Could not find victim %d. Trying again for all victims\n", i);
                 break;
@@ -101,11 +103,15 @@ void press_one(uint64_t *victims, int num_victims) {
     uint64_t rand_victim; 
     uint64_t* rand_attacker_1 = (uint64_t*) calloc(1, sizeof(uint64_t));
     uint64_t* rand_attacker_2 = (uint64_t*) calloc(1, sizeof(uint64_t)); 
-
-    while (true) {
-        for (int i = 0; i < num_victims; i++) {
-            uint32_t num_bit_flips = press(victims_virt_addr[i], attacker_1[i], attacker_2[i]);
-            if (num_bit_flips > 0) break;
+    std::set<payload *> found;
+    while (found.size() != num_victims) {
+        for (payload *p: payloads) {
+            uint32_t num_bit_flips = press(p->victim, p->attacker1, p->attacker2);
+            if (num_bit_flips > 0) {
+                p->bit_flips = num_bit_flips;
+                found.insert(p);
+                payloads.erase(p);
+            };
 
             // press random victims
             for (int j = 0; j < 50; j++) {
@@ -117,9 +123,12 @@ void press_one(uint64_t *victims, int num_victims) {
             }
         }
     }
+    printf("Found bit flips in all victim rows\n");
+    for (payload *f: found) {
+        print_result(f->victim, f->attacker1, f->attacker2, f->bit_flips);
+        free(f);
+    }
     deallocate_pages(allocated_mem, mem_size);
-    free(attacker_1);
-    free(attacker_2);
     free(rand_attacker_1);
     free(rand_attacker_2);
 }

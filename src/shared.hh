@@ -19,6 +19,12 @@
 #include <cstdint>
 #include <emmintrin.h>
 
+typedef struct payload {
+    uint64_t victim;
+    uint64_t attacker1;
+    uint64_t attacker2;
+    int bit_flips;
+} payload;
 
 // Physical Page Number to Virtual Page Number Map
 extern std::map<uint64_t, uint64_t> PPN_VPN_map;
