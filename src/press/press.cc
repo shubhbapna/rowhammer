@@ -70,7 +70,7 @@ void press_all() {
             }
         }
     }
-    printf("Found vulnerable row at %ld\n", victim);
+    printf("Found vulnerable row at %ld with bitflips %d\n", victim, num_bit_flips);
     num_bit_flips = press(victim, *attacker_1, *attacker_2);
     FILE *fp = non_verified_results;
     if (num_bit_flips > 0) {
