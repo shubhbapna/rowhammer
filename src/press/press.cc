@@ -118,6 +118,7 @@ void press_one(uint64_t *victims, int num_victims) {
         for (payload *p: payloads) {
             uint32_t num_bit_flips = press(p->victim, p->attacker1, p->attacker2);
             if (num_bit_flips > 0) {
+                printf("Found bit flips in victim %ld\n", p->victim);
                 p->bit_flips = num_bit_flips;
                 found.insert(p);
                 payloads.erase(p);
