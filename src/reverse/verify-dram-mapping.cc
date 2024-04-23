@@ -9,7 +9,8 @@ int main(int argc, char **argv) {
     printf("Hypothesis:\n");
     printf("\tCol bits: 0-12\n");
     printf("\tBank xor bits: 13-15\n");
-    printf("\tRow bits: 16-31\n");
+    printf("\tRank bits: 16\n");
+    printf("\tRow bits: 17-31\n");
     printf("Confirming...\n");
 
     uint64_t mem_size = 1.8 * BUFFER_SIZE;
@@ -21,13 +22,14 @@ int main(int argc, char **argv) {
     while (tries-- > 0) {
         addr = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
         uint64_t phys_addr = virt_to_phys(addr);
-        uint64_t row = phys_addr >> 16;
+        uint64_t row = phys_addr >> 17;
+	uint64_t rank = phys_addr & 1 << 16;
         uint64_t col = phys_addr & 0x1fff; // 13 bits 
         int bank_xor_bits = (phys_addr >> 13) & 0x7;
         int bank = bank_xor_bits ^ (row & 0x7);
 
-        addr_a = phys_to_virt(get_dram_address(row + 1, bank, col));
-        addr_b = phys_to_virt(get_dram_address(row - 1, bank, col));
+        addr_a = phys_to_virt(get_dram_address(row + 1, bank, col, rank));
+        addr_b = phys_to_virt(get_dram_address(row - 1, bank, col, rank));
         if (addr_a != 0 && addr_b != 0) break;
     }
 

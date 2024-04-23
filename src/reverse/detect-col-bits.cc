@@ -30,14 +30,17 @@ int main(int argc, char **argv) {
         for (int s = 0; s < SAMPLES; s++) {
             uint64_t addr, addr0, addr1;
             int tries = 1000;
+    //setup_PPN_VPN_map(allocated_mem, mem_size);
             while (tries-- > 0) {
                 addr = virt_to_phys((uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE))));
                 addr0 = phys_to_virt(addr ^ (addr & (1 << x)));
                 addr1 = phys_to_virt(addr | (1  << x));
                 if (addr != 0 && addr0 != 0 && addr1 != 0) break;
             }
+	    printf("\n");
             if (tries <= 0) continue;
-            uint64_t time = two_address_access_latency(addr0, addr1);
+            print_result(addr, addr0, addr1, 0);
+	    uint64_t time = two_address_access_latency(addr0, addr1);
             bit_lat_histogram[time / BUCKET_LAT_STEP]++;
         }
         
