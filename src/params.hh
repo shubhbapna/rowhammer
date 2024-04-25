@@ -40,4 +40,8 @@
 
 #define ROW_BUFFER_HIT_LATENCY (290)
 
+#ifndef VERBOSE
+    #define VERBOSE 0
+#endif
+
 #endif

@@ -4,10 +4,6 @@
 #include <unistd.h>
 #include <set>
 
-#ifndef VERBOSE
-    #define VERBOSE 0
-#endif
-
 uint64_t mem_size = 1.8 * BUFFER_SIZE;
 FILE* verified_results;
 FILE* non_verified_results;
@@ -70,14 +66,16 @@ void press_all() {
             }
         }
     }
-    printf("Found vulnerable row at %ld with bitflips %d\n", victim, num_bit_flips);
+    printf("Found vulnerable row at %ld (virt) with bitflips %d\n", victim, num_bit_flips);
     num_bit_flips = press(victim, *attacker_1, *attacker_2);
     FILE *fp = non_verified_results;
     if (num_bit_flips > 0) {
+        printf("Verified vulnerable row at %ld (virt) with bitflips %d\n", victim, num_bit_flips);
         fp = verified_results;
     }
     fwrite(&victim, sizeof(uint64_t), 1, fp);
     fwrite("\n", 1, 1, fp);
+    fflush(fp);
     free(attacker_1);
     free(attacker_2);
 }

@@ -1,0 +1,35 @@
+Module Manufacturer                              Micron Technology
+DRAM Manufacturer                                Micron Technology
+Manufacturing Location Code                      0x0F
+Manufacturing Date                               2012-W20
+Assembly Serial Number                           0xE363840A
+Part Number                                      16JTF51264AZ-1G6M1
+Revision Code                                    0x4D31
+
+Maximum module speed                             1600 MT/s (PC3-12800)
+Size                                             4096 MB
+Banks x Rows x Columns x Bits                    8 x 15 x 10 x 64
+Ranks                                            2
+SDRAM Device Width                               8 bits
+Primary Bus Width                                64 bits
+tCL-tRCD-tRP-tRAS                                11-11-11-28
+Supported CAS Latencies (tCL)                    11T, 10T, 9T, 8T, 7T, 6T, 5T
+
+---------------------------------------------------------------------------------------------
+
+Module Manufacturer                              Samsung
+DRAM Manufacturer                                Samsung
+Manufacturing Location Code                      0x02
+Manufacturing Date                               2011-W17
+Assembly Serial Number                           0x85784755
+Part Number                                      M378B5773DH0-CH9
+
+Maximum module speed                             
+1333 MT/s (PC3-10600)
+Size                                             2048 MB
+Banks x Rows x Columns x Bits                    8 x 15 x 10 x 64
+Ranks                                            1
+SDRAM Device Width                               8 bits
+Primary Bus Width                                64 bits
+tCL-tRCD-tRP-tRAS                                9-9-9-24
+Supported CAS Latencies (tCL)                    9T, 8T, 7T, 6T

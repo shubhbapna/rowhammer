@@ -4,8 +4,7 @@
 #include <unistd.h>
 #include <set>
 
-uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t attacker_virt_addr_2) {
-
+uint32_t hammer(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t attacker_virt_addr_2) {
     // prime
     uint8_t *vict_virt_addr_ptr = reinterpret_cast<uint8_t *>(vict_virt_addr);
     uint8_t *attacker_virt_addr_1_ptr = reinterpret_cast<uint8_t *>(attacker_virt_addr_1);
@@ -34,7 +33,14 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
     }
 
     flush_row(vict_virt_addr_ptr);
-    return count_flips(vict_virt_addr_ptr, 0x55); 
+    uint32_t number_of_bitflips_in_target = count_flips(vict_virt_addr_ptr, 0x55);
+    if (VERBOSE > 0) {
+        print_result(vict_virt_addr, attacker_virt_addr_1, attacker_virt_addr_2, number_of_bitflips_in_target);
+    }
+    if (VERBOSE > 1 && number_of_bitflips_in_target) {
+        print_diff(vict_virt_addr_ptr, 0x55);
+    }
+    return number_of_bitflips_in_target; 
 }
 
 int main(int argc, char **argv) {
@@ -46,17 +52,25 @@ int main(int argc, char **argv) {
     uint64_t victim; 
     uint64_t* attacker_1 = (uint64_t*) calloc(1, sizeof(uint64_t));
     uint64_t* attacker_2 = (uint64_t*) calloc(1, sizeof(uint64_t)); 
-
+    uint32_t num_bit_flips;
     while (true) {
         victim = (uint64_t)((uint8_t *)allocated_mem + ROW_SIZE * (rand() % (mem_size / PAGE_SIZE)));
 
         // row + 1, row - 1
         if (get_addresses_to_hammer(virt_to_phys(victim), attacker_1, attacker_2, 1)) {
-            uint32_t num_bit_flips = hammer_addresses(victim, *attacker_1, *attacker_2);
-            print_result(victim, *attacker_1, *attacker_2, num_bit_flips);
+            num_bit_flips = hammer(victim, *attacker_1, *attacker_2);
             if (num_bit_flips > 0) break;
         }
     }
+    printf("Found vulnerable row at %ld (virt) with bitflips %d\n", victim, num_bit_flips);
+    num_bit_flips = hammer(victim, *attacker_1, *attacker_2);
+    if (num_bit_flips > 0) {
+        printf("Verified vulnerable row at %ld (virt) with bitflips %d\n", victim, num_bit_flips);
+    } else {
+        printf("Could not verify vulnerable row at %ld (virt) with bitflips %d\n", victim, num_bit_flips);
+    }
     deallocate_pages(allocated_mem, mem_size);
+    free(attacker_1);
+    free(attacker_2);
 }
 
